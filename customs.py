@@ -4,7 +4,7 @@
 
 # Inbuilt Functions
 
-from time import time
+import time
 import math
 import itertools
 
@@ -146,12 +146,12 @@ class Timer(object):
     def __init__(self):
         self.start = 0.0
         self.end = 0.0
-        self.elapsed = 0.0
+        self.interval = 0.0
 
     def __enter__(self):
-        self.start = time()
+        self.start = time.clock()
 
-    def __exit__(self, type, value, traceback):
-        self.end = time()
-        self.elapsed = self.end - self.start
-        print 'exec time = ', self.elapsed
+    def __exit__(self, *args):
+        self.end = time.clock()
+        self.interval = self.end - self.start
+        print 'exec time = ', self.interval
