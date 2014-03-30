@@ -13,14 +13,14 @@ This project runs on [Python 2.7.6](https://www.python.org/download/releases/2.7
 
 You can:
 
-- discuss ideas via GitHub comments or email.
-- contribute your alternative solutions and improvements via GitHub Pull Requests.
-- report bugs via GitHub's Issue Tracker.
+- discuss ideas via [GitHub's Wiki](https://github.com/arvindch/project-euler/wiki), comments or email.
+- contribute your alternative solutions and improvements via [GitHub Pull Requests](https://github.com/arvindch/project-euler/pulls).
+- report bugs via [GitHub's Issue Tracker](https://github.com/arvindch/project-euler/issues).
 
 Guidelines:
 
-- Keep your code pythonic.
-- Read 'template.py' for the solution code format.
+- Keep your code [pythonic](http://legacy.python.org/dev/peps/pep-0020/).
+- Read [template.py](https://github.com/arvindch/project-euler/blob/master/template.py) for the solution code format.
 - Preferably, avoid the usage of non-default Python modules.
-- Reusable functions should be modularized and added to 'customs.py'
-- Use the Timer() class, from 'customs.py', to automatically time your solution.
+- Reusable functions should be modularized and added to [customs.py](https://github.com/arvindch/project-euler/blob/master/customs.py)
+- Use the [Timer() class](https://github.com/arvindch/project-euler/blame/master/customs.py#L142-157), to automatically time your solution.
