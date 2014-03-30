@@ -20,6 +20,7 @@ You can:
 Guidelines:
 
 - Keep your code pythonic.
+- Read 'template.py' for the solution code format.
 - Preferably, avoid the usage of non-default Python modules.
 - Reusable functions should be modularized and added to 'customs.py'
 - Use the Timer() class, from 'customs.py', to automatically time your solution.
