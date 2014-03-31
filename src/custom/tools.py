@@ -7,6 +7,9 @@ import time
 class Timer(object):
     """
     A Timer implementation, to easily time code-snippet execution
+    Use as:
+    with Timer():
+        #code
     """
     def __init__(self):
         self.start = 0.0
