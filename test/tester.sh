@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# use as:
+# $ ./tester.sh problem_num user_name
+
 PROJDIR=$(dirname $PWD)
 TESTDIR="$PWD"
 export PYTHONPATH=$PROJDIR
