@@ -4,9 +4,10 @@ __email__ = 'achembarpu@gmail.com'
 
 def main():
     
+    giv_lim = 1000
     req_sum = 0
     
-    for x in xrange(1000):
+    for x in xrange(giv_lim):
         if x % 3 == 0 or x % 5 == 0:
             req_sum += x
     
