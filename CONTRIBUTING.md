@@ -12,12 +12,12 @@ You can:
 #### System Setup
 
 * OS - [Ubuntu 12.04.x LTS](http://releases.ubuntu.com/12.04/)
-* Python - [2.7.6](https://www.python.org/download/releases/2.7.6/)
+* Python - [2.7.x](https://www.python.org/download/releases/2.7.6/)
 
 #### Getting Started
 * Make sure you have a [GitHub account](https://github.com/signup/free)
-* [Fork](https://github.com/arvindch/project-euler/fork) the repository on GitHub
-* Setup [Git](http://git-scm.com/) locally
+* [Fork](https://github.com/arvindch/project-euler/fork) this repository on GitHub
+* Setup [Git](http://git-scm.com/) locally and connect it to GitHub
 
 #### Start Coding
 * Clone the master repository: `git clone project-euler`
