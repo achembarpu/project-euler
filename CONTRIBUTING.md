@@ -28,8 +28,8 @@ You can:
 #### Validating & Timing
 * To test your solution, run [tester.sh](https://github.com/arvindch/project-euler/blob/master/test/tester.sh): `./tester.sh problem_num user_name`
 * If the validation fails, fix your code.
-* If the execution time (found in `timings.txt`) is too long, optimize your code.
-* Correct solutions validate and run in under a minute...
+* If the execution time in `timings.txt` is too long, optimize your code.
+* Acceptable solutions validate and run in under a minute...
 
 #### Submitting Solutions
 * Check your changes: `git status`
@@ -46,7 +46,7 @@ If all goes well, your solution will be merged!
 * Refer [pre-existing solutions](https://github.com/arvindch/project-euler/tree/master/src/solutions) for formatting styles.
 * Preferably, avoid the usage of non-default Python modules.
 * Reusable functions should be [modularized and categorized](https://github.com/arvindch/project-euler/tree/master/src/custom).
-* Use the [Timer() class](https://github.com/arvindch/project-euler/blob/master/src/custom/tools.py#L7), to automatically time your solutions/code-snippets.
+* Use the [Timer() class](https://github.com/arvindch/project-euler/blob/master/src/custom/tools.py#L7), to conveniently time your solutions/code-snippets.
 
 ### Help
 * [Python](https://docs.python.org/2/index.html)
