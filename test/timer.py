@@ -33,10 +33,9 @@ def main():
         overall_time += interval_time
     
     avg_time = float(overall_time / test_runs)
-    run_time = time.gmtime()
-    neat_run_time = time.strftime('%d %b %Y %H:%M:%S GMT', run_time)
+    run_time = time.strftime('%d %b %Y %H:%M:%S GMT', time.gmtime())
     
-    exec_info = '%s: %s - %s ms' % (neat_run_time, py_file, avg_time)
+    exec_info = '%s: %s - %s s' % (run_time, py_file, avg_time)
     
     return exec_info
 
