@@ -22,4 +22,4 @@ class Timer(object):
     def __exit__(self, *args):
         self.end = time.clock()
         self.interval = self.end - self.start
-        print "execution time = %s ms" % (self.interval)
+        print "execution time = %s s" % (self.interval)

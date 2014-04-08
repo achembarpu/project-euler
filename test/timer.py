@@ -7,7 +7,6 @@ import time
 
 # Tweakable Parameters
 
-
 test_runs = 10
 
 
@@ -37,7 +36,7 @@ def main():
     run_time = time.gmtime()
     neat_run_time = time.strftime('%d %b %Y %H:%M:%S GMT', run_time)
     
-    exec_info = "%s: %s - %s ms" % (neat_run_time, py_file, avg_time)
+    exec_info = '%s: %s - %s ms' % (neat_run_time, py_file, avg_time)
     
     return exec_info
 
