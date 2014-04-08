@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 import sys
 import importlib
 import time
@@ -6,7 +8,7 @@ import time
 # Tweakable Parameters
 
 
-runs = 10
+test_runs = 10
 
 
 def main():
@@ -20,7 +22,7 @@ def main():
     
     overall_time = 0.0
     
-    for _ in xrange(runs):
+    for _ in xrange(test_runs):
         
         start_time = time.clock()
         
@@ -31,7 +33,7 @@ def main():
         interval_time = end_time - start_time
         overall_time += interval_time
     
-    avg_time = float(overall_time / runs)
+    avg_time = float(overall_time / test_runs)
     run_time = time.gmtime()
     neat_run_time = time.strftime('%d %b %Y %H:%M:%S GMT', run_time)
     
