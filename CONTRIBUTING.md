@@ -26,7 +26,7 @@ You can:
 * Follow the Code Guidelines
 
 #### Validating & Timing
-* To test your solution, run [tester.sh](https://github.com/arvindch/project-euler/blob/master/test/tester.sh): `./tester.py`
+* To test your solution, run [tester.py](https://github.com/arvindch/project-euler/blob/master/test/tester.py): `./tester.py`
 * If the validation fails, fix your code.
 * If the execution time in `timings.txt` is too long, optimize your code.
 * Acceptable solutions validate and run in under a minute...
