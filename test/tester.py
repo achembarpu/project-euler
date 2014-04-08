@@ -20,13 +20,11 @@ def tester():
     user_name = raw_input('Enter User Name:')
     prob_num = raw_input('Enter Problem Number:')
     
-    if not validation(user_name, prob_num):
-        print 'Test Failed...'
-        exit()
-    else:
+    if validation(user_name, prob_num):
         timing()
-    
-    print 'Test Success...'
+        print 'Test Success...'
+    else:
+        print 'Test Failed...'
 
 
 def validation(user_name, prob_num):
@@ -37,9 +35,9 @@ def validation(user_name, prob_num):
     
     module_path = 'src.solutions.%s' % prob_num
     
-    ans_dir = proj_dir + '/src/solutions' + '/' + prob_num
+    ans_dir = proj_dir + '/src/solutions/' + prob_num
     user_file = '%s_%s.py' % (prob_num, user_name)
-    ans_file_path = ans_dir + '/' + 'answer.txt'
+    ans_file_path = ans_dir + '/answer.txt'
     
     user_solution = importlib.import_module('%s.%s' % (module_path, user_file[:-3]))
     
@@ -58,15 +56,14 @@ def validation(user_name, prob_num):
 
 def timing():
     
-    timings_file_path = ans_dir + '/' + 'timings.txt'
+    timings_file_path = ans_dir + '/timings.txt'
     
     for pyfile in os.listdir(ans_dir):
-        file_ext = pyfile[-3:]
-        if file_ext == '.py' and pyfile[1] != '_':
+        if pyfile[-3:] == '.py' and pyfile[1] != '_':
             print 'Timing %s' % pyfile
             timing_info = timer(pyfile)
             with open(timings_file_path, 'a') as timef:
-                timef.write(timing_info + '\n')
+                timef.write('%s\n' % timing_info)
     
     print 'Finished Timing!'
     
