@@ -15,10 +15,14 @@ global proj_dir, ans_dir
 
 def tester():
     
+    global ans_dir
+    
     print 'Starting Test...'
     
     user_name = raw_input('Enter User Name:')
     prob_num = raw_input('Enter Problem Number:')
+    
+    ans_dir = proj_dir + '/src/solutions/' + prob_num
     
     if validation(user_name, prob_num):
         timing()
@@ -29,17 +33,14 @@ def tester():
 
 def validation(user_name, prob_num):
     
-    global ans_dir
-    
     print 'Validating solution...'
     
     module_path = 'src.solutions.%s' % prob_num
     
-    ans_dir = proj_dir + '/src/solutions/' + prob_num
     user_file = '%s_%s.py' % (prob_num, user_name)
     ans_file_path = ans_dir + '/answer.txt'
     
-    user_solution = importlib.import_module('%s.%s' % (module_path, user_file[:-3]))
+    user_solution = importlib.import_module('%s.%s' % (module_path, user_file[0:-3]))
     
     user_ans = str(user_solution.main())
     
