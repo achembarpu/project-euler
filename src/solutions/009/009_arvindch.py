@@ -22,7 +22,7 @@ def main():
         try:
             for a in xrange(start, end):
                 for b in xrange(start, end):
-                    c = math.sqrt(a**2 + b**2)
+                    c = math.sqrt(a ** 2 + b ** 2)
                     if checks.is_int(c):
                         triplet = [a, b, int(c)]
                         yield triplet

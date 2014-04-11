@@ -36,7 +36,7 @@ def main():
     req_prod = 0
 
     for i in xrange(inf_lim):
-        simul_digs = giv_num[i:(i+giv_len)]
+        simul_digs = giv_num[i:(i + giv_len)]
         simul_prod = misc.list_product(simul_digs)
         if simul_prod > req_prod:
             req_prod = simul_prod

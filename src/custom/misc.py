@@ -9,7 +9,7 @@ def nth_prime(n):
     Returns the nth prime number
     """
     primes = lists.primes_list()
-    return primes[n-1]
+    return primes[n - 1]
 
 
 def list_product(a_list):

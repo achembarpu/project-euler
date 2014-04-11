@@ -12,7 +12,7 @@ def is_prime(number):
     """
     if number == 2:
         return True
-    for x in xrange(2, int(math.sqrt(number)+1), 2):
+    for x in xrange(2, int(math.sqrt(number) + 1), 2):
         if number % x == 0:
             return False
     return True
