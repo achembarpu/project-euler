@@ -1,13 +1,12 @@
 #!/usr/bin/env python2.7
 
+import importlib
 import os
 import sys
-import importlib
 import time
 
 
 # Tweakable Parameters
-
 test_runs = 10
 
 global proj_dir, ans_dir

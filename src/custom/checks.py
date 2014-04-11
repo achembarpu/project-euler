@@ -1,8 +1,9 @@
 # Checks
 
 
-from src.custom import params
 import math
+
+from src.custom import params
 
 
 def is_prime(number):

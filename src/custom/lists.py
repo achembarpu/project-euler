@@ -1,8 +1,9 @@
 # Lists
 
 
-from src.custom import gens, params
 import itertools
+
+from src.custom import gens, params
 
 
 def primes_list(limit=params.prime_lim):
