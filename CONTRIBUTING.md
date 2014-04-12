@@ -13,6 +13,7 @@ You can:
 
 * OS - [Ubuntu 12.04.x LTS](http://releases.ubuntu.com/12.04/)
 * Python - [2.7.x](https://www.python.org/download/releases/2.7.6/)
+* IDE (suggested) - [Eclipse Standard 4.3.2](https://www.eclipse.org/downloads/packages/eclipse-standard-432/keplersr2) + [PyDev Plugin](http://pydev.org/)
 
 #### Getting Started
 * Make sure you have a [GitHub account](https://github.com/signup/free)
@@ -20,7 +21,7 @@ You can:
 * Setup [Git](http://git-scm.com/) locally and connect it to GitHub
 
 #### Start Coding
-* Clone the master repository: `git clone project-euler`
+* Clone the master repository: `git clone https://github.com/user_name/project-euler.git`
 * Choose a Project Euler problem
 * Create & Use a branch for your work: `git branch problem-n master`, `git checkout problem-n`
 * Follow the Code Guidelines
@@ -38,7 +39,7 @@ You can:
 * Submit a [Pull Request](https://github.com/arvindch/project-euler/compare/)
 * Wait for other maintainers to review your code...
 
-If all goes well, your solution will be merged!
+If all goes well, your solution will be accepted and merged!
 
 ## Code Guidelines:
 
@@ -52,4 +53,5 @@ If all goes well, your solution will be merged!
 * [Python](https://docs.python.org/2/index.html)
 * [Git](http://git-scm.com/doc)
 * [Ubuntu](https://help.ubuntu.com/12.04/index.html)
+* [Eclipse](http://help.eclipse.org/kepler/index.jsp)
 * [Linux/Bash Shell](http://linuxcommand.org/learning_the_shell.php)
