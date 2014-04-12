@@ -37,3 +37,6 @@ nosetests.xml
 
 # Temporary Files
 *.*~
+
+# Information Files
+user.txt
