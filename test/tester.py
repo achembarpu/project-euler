@@ -9,7 +9,7 @@ import time
 # Tweakable Parameters
 test_runs = 10
 
-global proj_dir, ans_dir
+global test_dir, proj_dir, ans_dir
 
 
 def tester():
@@ -18,7 +18,16 @@ def tester():
     
     print 'Starting Test...'
     
-    user_name = raw_input('Enter User Name:')
+    usr_file_path = test_dir + '/user.txt'
+    try:
+        with open(usr_file_path, 'r') as usr:
+            user_name = str(usr.read())
+    except IOError:
+        user_name = raw_input('Enter User Name:')
+        with open(usr_file_path, 'w+') as usr:
+            usr.write(user_name)
+    
+    print 'Validating for %s' % user_name
     prob_num = raw_input('Enter Problem Number:')
     
     ans_dir = proj_dir + '/src/solutions/' + prob_num
@@ -34,8 +43,7 @@ def validation(user_name, prob_num):
     
     print 'Validating solution...'
     
-    module_path = 'src.solutions.%s' % prob_num
-    
+    module_path = 'src.solutions.' + prob_num
     user_file = '%s_%s.py' % (prob_num, user_name)
     ans_file_path = ans_dir + '/answer.txt'
     
@@ -103,7 +111,7 @@ def timer(py_file):
 
 def main():
     
-    global proj_dir
+    global test_dir, proj_dir
     
     test_dir = os.getcwd()
     proj_dir = test_dir[0:-len('/test')]
