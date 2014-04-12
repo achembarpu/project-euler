@@ -11,11 +11,7 @@ from src.custom import checks, misc, excepts
 
 def main():
     
-    giv_sum = 1000
-    inf_lim = giv_sum / 2
-    req_prod = 0
-    
-    def pythagorean_triplet_gen(start=2, end=100):
+    def pythagorean_triplet_gen(start, end):
         """
         Generates Pythagorean Triplets
         """
@@ -28,6 +24,10 @@ def main():
                         yield triplet
         except IndexError:
             raise StopIteration
+    
+    giv_sum = 1000
+    inf_lim = giv_sum / 2
+    req_prod = 0
 
     try:
         for triplet in pythagorean_triplet_gen(2, inf_lim):
@@ -35,6 +35,8 @@ def main():
                 req_prod = int(misc.list_product(triplet))
                 raise excepts.BreakNestedLoop
     except excepts.BreakNestedLoop:
+        pass
+    finally:
         return req_prod
 
 
