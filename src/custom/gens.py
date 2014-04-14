@@ -9,7 +9,6 @@ def fibonacci_gen():
     Generates Fibonacci Numbers
     """
     a, b = 0, 1
-    
     while True:
         yield a
         a, b = b, a + b
