@@ -7,12 +7,16 @@ import time
 
 
 # Tweakable Parameters
+
 test_runs = 10
 
-global test_dir, proj_dir, ans_dir
+
+global test_dir, proj_dir, ans_dir, user_name
 
 
 def tester():
+    
+    global user_name
     
     print 'Starting Test...'
     
@@ -30,14 +34,14 @@ def tester():
     
     prob_num = raw_input('Enter Problem Number:')
     
-    if validation(user_name, prob_num):
+    if validation(prob_num):
         timing()
         print 'Test Success...'
     else:
         print 'Test Failed...'
 
 
-def validation(user_name, prob_num):
+def validation(prob_num):
     
     global ans_dir
     
@@ -56,38 +60,44 @@ def validation(user_name, prob_num):
     
     user_ans = str(user_solution.main())
     
-    with open(ans_file_path, 'r') as ansf:
-        expect_ans = str(ansf.read())
-        
-        if user_ans == expect_ans:
-            print 'Valid Output!'
-            return True
-        else:
-            print 'Invalid Output!'
-            return False
+    try:
+        with open(ans_file_path, 'r') as ansf:
+            expect_ans = str(ansf.read())
+    except IOError:
+        print 'Create a valid answer.txt!'
+        return False
+    
+    if user_ans == expect_ans:
+        print 'Valid Output!'
+        return True
+    else:
+        print 'Invalid Output!'
+        return False
 
 
 def timing():
     
     timings_file_path = ans_dir + '/timings.txt'
     
-    for pyfile in os.listdir(ans_dir):
-        if pyfile[-3:] == '.py' and pyfile[1] != '_':
-            print 'Timing %s' % pyfile
-            timing_info = timer(pyfile)
-            
-            try:
-                with open(timings_file_path, 'w') as timef:
-                    timef.write('%s\n' % timing_info)
-            except IOError:
-                with open(timings_file_path, 'w+') as timef:
-                    timef.write('%s\n' % timing_info)
+    run_time = time.strftime('%d %b %Y %H:%M:%S GMT', time.gmtime())
+    
+    with open(timings_file_path, 'w+') as timef:
+        testing_info = '%s @ %s\n' % (user_name, run_time)
+        timef.write(testing_info)
+    
+        for pyfile in os.listdir(ans_dir):
+            if pyfile[-3:] == '.py' and pyfile[1] != '_':
+                print 'Timing %s...' % pyfile
+                timing_info = timer(pyfile)
+                timef.write('%s\n' % timing_info)
     
     print 'Finished Timing!'
     
-    print 'Solution Times:'
+    print 'Solution Times:\n'
     with open(timings_file_path, 'r') as timef:
-        for timing in timef.xreadlines():
+        times = timef.xreadlines()
+        next(times)
+        for timing in times:
             print timing
 
 
