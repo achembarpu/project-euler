@@ -11,16 +11,34 @@ import time
 test_runs = 10
 
 
-global test_dir, proj_dir, ans_dir, user_name
+global dirs, user_name, problems, is_test
 
 
 def tester():
     
-    global user_name
-    
     print 'Starting Test...'
     
-    usr_file_path = test_dir + '/user.txt'
+    setup()
+    
+    print 'Testing for %s:' % user_name
+    
+    for num in problems:
+        if is_test:
+            if validator(num):
+                timing(num)
+            else:
+                print 'Test Failed...'
+                return None
+        else:
+            timing(num)
+    else:
+        print 'Test Successful...'
+
+def setup():
+    
+    global dirs, user_name, problems, is_test
+    
+    usr_file_path = dirs['test'] + '/user.txt'
     
     try:
         with open(usr_file_path, 'r') as usrf:
@@ -30,25 +48,27 @@ def tester():
         with open(usr_file_path, 'w+') as usrf:
             usrf.write(user_name)
     
-    print 'Validating for %s' % user_name
+    prob_nums = raw_input('Enter Problem Numbers:')
     
-    prob_num = raw_input('Enter Problem Number:')
+    problems = []
     
-    if validation(prob_num):
-        timing()
-        print 'Test Success...'
+    if prob_nums == 'all':
+        is_test = False
+        for prob_dir in os.listdir(dirs['solutions']):
+            if prob_dir[1] != '_':
+                problems.append(prob_dir[0:3])
     else:
-        print 'Test Failed...'
-
-
-def validation(prob_num):
+        is_test = True
+        for num in prob_nums.split(' '):
+            problems.append(num)
     
-    global ans_dir
+
+def validator(prob_num):
     
     module_path = 'src.solutions.' + prob_num
     user_file = '%s_%s.py' % (prob_num, user_name)
-    ans_dir = proj_dir + '/src/solutions/' + prob_num
-    ans_file_path = ans_dir + '/answer.txt'
+    prob_dir =  dirs['solutions'] + '/' + prob_num
+    ans_file_path = prob_dir + '/answer.txt'
     
     try:
         user_solution = importlib.import_module('%s.%s' % (module_path, user_file[0:-3]))
@@ -56,7 +76,7 @@ def validation(prob_num):
         print 'Invalid Problem Number!'
         return False
     
-    print 'Validating solution...'
+    print 'Validating solution for %s...' % prob_num
     
     user_ans = str(user_solution.main())
     
@@ -75,17 +95,20 @@ def validation(prob_num):
         return False
 
 
-def timing():
+def timing(prob_num):
     
-    timings_file_path = ans_dir + '/timings.txt'
+    prob_dir =  dirs['solutions'] + '/' + prob_num
+    timings_file_path = prob_dir + '/timings.txt'
     
     run_time = time.strftime('%d %b %Y %H:%M:%S GMT', time.gmtime())
+    
+    print 'Timing solutions for %s...' % prob_num
     
     with open(timings_file_path, 'w+') as timef:
         testing_info = '%s @ %s\n' % (user_name, run_time)
         timef.write(testing_info)
     
-        for pyfile in os.listdir(ans_dir):
+        for pyfile in os.listdir(prob_dir):
             if pyfile[-3:] == '.py' and pyfile[1] != '_':
                 print 'Timing %s...' % pyfile
                 timing_info = timer(pyfile)
@@ -132,12 +155,15 @@ def timer(py_file):
 
 def main():
     
-    global test_dir, proj_dir
+    global dirs
     
-    test_dir = os.getcwd()
-    proj_dir = test_dir[0:-len('/test')]
+    dirs = {}
     
-    sys.path.append(proj_dir)
+    dirs['test'] = os.getcwd()
+    dirs['project'] = dirs['test'][0:-len('/test')]
+    dirs['solutions'] = dirs['project'] + '/src/solutions'
+    
+    sys.path.append(dirs['project'])
     
     tester()
 
