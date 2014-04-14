@@ -10,12 +10,18 @@ def is_prime(number):
     """
     Checks if number is prime
     """
-    if number == 2:
+    if number < 2:
+        return False
+    elif number == 2:
         return True
-    for x in xrange(2, int(math.sqrt(number) + 1), 2):
-        if number % x == 0:
-            return False
-    return True
+    elif number % 2 == 0:
+        return False
+    else:
+        for x in xrange(3, int(math.sqrt(number) + 1), 2):
+            if number % x == 0:
+                return False
+        else:
+            return True
 
 
 def is_palindrome(thing):
