@@ -1,9 +1,9 @@
 Project Euler
 =============
 
-### About
-
 _A public repository of readable, understandable, efficient solutions to the Project Euler problems._
+
+### About
 
 [Project Euler](https://projecteuler.net/) is a series of mathematical programming problems, that can be solved through Python programs which execute in under a minute.
 The use of mathematical concepts and logical thinking leads to the best solutions.
@@ -11,7 +11,6 @@ The use of mathematical concepts and logical thinking leads to the best solution
 ### Contribute
 
 If you want to contribute to this project, read [this](https://github.com/arvindch/project-euler/blob/master/CONTRIBUTING.md), for more information.
-
 
 ### License
 
