@@ -37,15 +37,3 @@ def is_int(number):
         return True
     else:
         return False
-
-
-
-
-
-
-
-
-
-
-
-
