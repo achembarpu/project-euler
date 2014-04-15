@@ -12,7 +12,7 @@ from src.custom import lists
 def main():
     
     giv_num = 600851475143
-    inf_lim = int(math.sqrt(giv_num)) + 1
+    inf_lim = int(math.sqrt(giv_num))
     req_fact = 0
 
     for prime_num in lists.primes_list(inf_lim):
