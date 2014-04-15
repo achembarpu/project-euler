@@ -146,7 +146,7 @@ def timer(py_file):
         interval_time = end_time - start_time
         overall_time += interval_time
     
-    avg_time = float(overall_time / test_runs)
+    avg_time = overall_time / test_runs
     
     exec_info = '%s: %s - %s s' % (run_time, py_file, avg_time)
     
