@@ -7,16 +7,20 @@ from src.custom import params
 def primes_list(limit=params.prime_lim):
     """
     Returns a list of prime numbers
-    Uses the Sieve of Sundaram method
+    Using a tweaked Sieve of Eratosthenes method
     """
-    numbers = range(3, limit, 2)
-    half = int(limit / 2)
-    initial = 4
-
-    for step in xrange(3, limit, 2):
-        for i in xrange(initial, half, step):
-            numbers[i-1] = None
-        initial += 2 * (step + 1)
-
-        if initial > half:
-            return [2] + filter(None, numbers)
+    half = limit//2
+    sieve = [False, True] * half
+    sieve[0] = sieve[1] = False
+    sieve[2] = True
+    i = 3
+    while i < half:
+        for j in xrange(i*i, limit, i):
+            sieve[j] = False
+        i += 1
+        try:
+            while not sieve[i]:
+                i += 1
+        except IndexError:
+            break
+    return [i for i in xrange(limit) if sieve[i]]
