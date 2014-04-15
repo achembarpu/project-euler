@@ -11,8 +11,7 @@ def primes_list(limit=params.prime_lim):
     """
     half = limit//2
     sieve = [False, True] * half
-    sieve[0] = sieve[1] = False
-    sieve[2] = True
+    sieve[1], sieve[2] = False, True
     i = 3
     while i < half:
         for j in xrange(i*i, limit, i):
@@ -23,4 +22,5 @@ def primes_list(limit=params.prime_lim):
                 i += 1
         except IndexError:
             break
-    return [i for i in xrange(limit) if sieve[i]]
+    else:
+        return [i for i in xrange(limit) if sieve[i]]
