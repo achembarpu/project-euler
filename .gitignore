@@ -40,3 +40,6 @@ nosetests.xml
 
 # Information Files
 user.txt
+
+# Code Testing files
+temp.py
