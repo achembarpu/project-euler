@@ -13,15 +13,14 @@ def main():
     req_index = 0
     
     fibs = gens.fibonacci_gen()
-    num = next(fibs)
+    next(fibs)  # skip 0
     
-    i = 0
-    while True:
-        num = next(fibs)
-        i += 1
-        if len(str(num)) == giv_digits:
+    i = 1
+    for n in fibs:
+        if len(str(n)) == giv_digits:
             req_index = i
             break
+        i += 1
     
     return req_index
 
