@@ -67,7 +67,7 @@ def validator(prob_num):
     
     module_path = 'src.solutions.' + prob_num
     user_file = '%s_%s.py' % (prob_num, user_name)
-    prob_dir =  dirs['solutions'] + '/' + prob_num
+    prob_dir = dirs['solutions'] + '/' + prob_num
     ans_file_path = prob_dir + '/answer.txt'
     
     try:
@@ -97,7 +97,7 @@ def validator(prob_num):
 
 def timing(prob_num):
     
-    prob_dir =  dirs['solutions'] + '/' + prob_num
+    prob_dir = dirs['solutions'] + '/' + prob_num
     timings_file_path = prob_dir + '/timings.txt'
     
     run_time = time.strftime('%d %b %Y %H:%M:%S GMT', time.gmtime())

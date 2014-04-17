@@ -12,7 +12,7 @@ def main():
     sum_of_squares = (giv_n * (giv_n + 1) * ((2 * giv_n) + 1)) / 6
     square_of_sum = ((giv_n ** 2) * ((giv_n + 1) ** 2)) / 4
     req_diff = square_of_sum - sum_of_squares
-
+    
     return req_diff
 
 

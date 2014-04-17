@@ -12,13 +12,13 @@ def main():
     giv_low = 100
     giv_high = 1000
     req_num = 0
-
-    for x in xrange(giv_low, giv_high):
-        for y in xrange(x, giv_high):
-            product = x * y
+    
+    for a in xrange(giv_low, giv_high):
+        for b in xrange(a, giv_high):
+            product = a * b
             if checks.is_palindrome(product) and product > req_num:
                 req_num = product
-
+    
     return req_num
 
 

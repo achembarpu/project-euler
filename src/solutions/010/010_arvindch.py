@@ -12,8 +12,10 @@ def main():
     giv_lim = 2000000
     req_sum = 0
     
-    for prime_num in lists.primes_list(giv_lim):
-        req_sum += prime_num
+    prime_nums = lists.primes_list(giv_lim)
+    
+    for n in prime_nums:
+        req_sum += n
     
     return req_sum
 

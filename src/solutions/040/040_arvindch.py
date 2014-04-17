@@ -16,14 +16,16 @@ def main():
             for digit in str(number):
                 yield int(digit)
     
+    
     giv_last_dig = 10 ** 6
-    digits = digit_gen()
-    decimal_constant = [next(digits) for _ in xrange(giv_last_dig)]
     req_prod = 1
+    
+    digits = digit_gen()
+    decimal_const = [next(digits) for _ in xrange(giv_last_dig)]
     
     i = 1
     while i <= giv_last_dig:
-        req_prod *= decimal_constant[i - 1]
+        req_prod *= decimal_const[i - 1]
         i *= 10
     
     return req_prod

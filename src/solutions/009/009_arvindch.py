@@ -6,7 +6,7 @@ __email__ = 'achembarpu@gmail.com'
 
 import math
 
-from src.custom import checks, misc, excepts
+from src.custom import checks, misc
 
 
 def main():
@@ -24,6 +24,7 @@ def main():
                         yield t
         except IndexError:
             raise StopIteration
+    
     
     giv_sum = 1000
     inf_lim = giv_sum / 2

@@ -8,12 +8,12 @@ from src.custom import misc
 
 
 def main():
-
+    
     giv_n = 10001
     req_num = 0
     
     req_num = misc.nth_prime(giv_n)
-
+    
     return req_num
 
 
