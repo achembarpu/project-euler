@@ -9,9 +9,9 @@ from src.custom import tools, excepts
 
 
 # Tweakable Parameters
+
 test_time = 60  # seconds
 test_runs = 10  # loops
-
 
 global dirs, user_name, test_type, problems
 
@@ -102,7 +102,7 @@ def timing():
                     except excepts.TimeoutError:
                         timing_info = 'Timed out!'
                     exec_info = '%s - %s\n' % (py_file[4:-3], timing_info)
-                    print exec_info[:-len('\n')]
+                    print exec_info[0:-len('\n')]
                     timef.write(exec_info)
 
 
@@ -131,7 +131,7 @@ def timer(py_file):
     
     avg_time = overall_time / test_runs
     
-    exec_time = '%s s' % (avg_time)
+    exec_time = '%s s' % avg_time
     
     return exec_time
 
