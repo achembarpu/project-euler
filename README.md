@@ -10,7 +10,7 @@ The use of mathematical concepts and logical thinking leads to the best solution
 
 ### Contribute
 
-If you want to contribute to this project, read [this](https://github.com/arvindch/project-euler/blob/master/CONTRIBUTING.md), for more information.
+If you want to contribute to this project, read [this](https://github.com/arvindch/project-euler/blob/master/CONTRIBUTING.md) for more information.
 
 ### License
 

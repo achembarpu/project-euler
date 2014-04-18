@@ -11,9 +11,9 @@ You can:
 
 #### System Setup
 
-* OS - [Ubuntu 12.04.x LTS](http://releases.ubuntu.com/12.04/)
 * Python - [2.7.x](https://www.python.org/download/releases/2.7.6/)
-* IDE (suggested) - [Eclipse Standard 4.3.2](https://www.eclipse.org/downloads/packages/eclipse-standard-432/keplersr2) + [PyDev Plugin](http://pydev.org/)
+* OS - [Ubuntu 12.04.x LTS](http://releases.ubuntu.com/12.04/)
+* IDE - [Eclipse Standard 4.3.2](https://www.eclipse.org/downloads/packages/eclipse-standard-432/keplersr2) + [PyDev Plugin](http://pydev.org/)
 
 #### Getting Started
 * Make sure you have a [GitHub account](https://github.com/signup/free)
@@ -47,7 +47,7 @@ If all goes well, your solution will be accepted and merged!
 * Refer [pre-existing solutions](https://github.com/arvindch/project-euler/tree/master/src/solutions) for formatting styles.
 * Preferably, avoid the usage of non-default Python modules.
 * Reusable functions should be [modularized and categorized](https://github.com/arvindch/project-euler/tree/master/src/custom).
-* Use the [Timer() class](https://github.com/arvindch/project-euler/blob/master/src/custom/tools.py#L7), to conveniently time your solutions/code-snippets.
+* Use the [Timer() class](https://github.com/arvindch/project-euler/blob/master/src/custom/tools.py#L10), to conveniently time your solutions/code-snippets.
 
 ### Help
 * [Python](https://docs.python.org/2/index.html)
