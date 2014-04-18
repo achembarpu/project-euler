@@ -6,6 +6,7 @@ import time
 
 from src.custom import excepts
 
+
 class Timer(object):
     """
     A Timer tool, to time code-snippet execution
