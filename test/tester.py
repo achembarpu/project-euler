@@ -38,7 +38,6 @@ def validator(prob_num):
     
     
     # validate problem solution
-    
     try:  # handle missing solution
         solution = importlib.import_module('%s.%s' % (module_path, usr_file))
     except ImportError:
@@ -77,7 +76,7 @@ def timing():
     
     global problems, dirs, test_runs
     
-    # level one - problems
+    # level 1 - problems
     for prob_num in problems:
         print '\n%s:\n' % prob_num
         
@@ -92,7 +91,7 @@ def timing():
             testing_info = '%s @ %s\n\n' % (user_name, run_time)
             timef.write(testing_info)
             
-            # level two - solutions
+            # level 2 - solutions
             for py_file in os.listdir(prob_dir):
                 # ignore non-solutions
                 if py_file[-3:] == '.py' and py_file[1] != '_':
@@ -108,7 +107,7 @@ def timing():
 
 def timer(py_file):
     
-    # import python script as module
+    # import python file as module
     module_name = py_file[0:-3]
     problem_num = module_name[0:3]
     
