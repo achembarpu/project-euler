@@ -19,4 +19,4 @@ This project uses the [GNU GPLv3 License](https://github.com/arvindch/project-eu
 ### Disclaimer
 
 This repository contains 'spoilers'.
-Read [this](https://github.com/arvindch/project-euler/blob/master/CONTRIBUTING.md) for more information.
+Read [this](https://github.com/arvindch/project-euler/blob/master/DISCLAIMER.md) for more information.
