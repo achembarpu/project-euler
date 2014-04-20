@@ -15,3 +15,8 @@ If you want to contribute to this project, read [this](https://github.com/arvind
 ### License
 
 This project uses the [GNU GPLv3 License](https://github.com/arvindch/project-euler/blob/master/LICENSE).
+
+### Disclaimer
+
+This repository contains 'spoilers'.
+Read [this](https://github.com/arvindch/project-euler/blob/master/CONTRIBUTING.md) for more information.
