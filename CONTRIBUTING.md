@@ -19,9 +19,9 @@ You can:
 * Make sure you have a [GitHub account](https://github.com/signup/free)
 * [Fork](https://github.com/arvindch/project-euler/fork) this repository on GitHub
 * Setup [Git](http://git-scm.com/) locally and connect it to GitHub
+* Clone your fork: `git clone https://github.com/user_name/project-euler.git`
 
 #### Start Coding
-* Clone the master repository: `git clone https://github.com/user_name/project-euler.git`
 * Choose a Project Euler problem
 * Create & Use a branch for your work: `git branch problem-n master`, `git checkout problem-n`
 * Follow the Code Guidelines
