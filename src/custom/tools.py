@@ -31,7 +31,7 @@ class Timer(object):
 
 class Timeout(object):
     """
-    A Timeout handler, to handle functions that may hang
+    A Timeout checker, to handle functions that may stall
     Use as:
     try:
         with Timeout(seconds):
