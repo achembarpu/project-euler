@@ -11,15 +11,18 @@ You can:
 
 #### System Setup
 
-* Python - [2.7.x](https://www.python.org/download/releases/2.7.6/)
-* OS - [Ubuntu 12.04.x LTS](http://releases.ubuntu.com/12.04/)
-* IDE - [Eclipse Standard 4.3.2](https://www.eclipse.org/downloads/packages/eclipse-standard-432/keplersr2) + [PyDev Plugin](http://pydev.org/)
+* Required:
+  * Python - [2.7.x](https://www.python.org/download/releases/2.7.6/)
+  * Git - [latest](http://git-scm.com/downloads)
+* Recommended:
+  * OS - [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/)
+  * IDE - [Eclipse Standard 4.3.2](https://www.eclipse.org/downloads/packages/eclipse-standard-432/keplersr2) + [PyDev Plugin](http://pydev.org/download.html)
 
 #### Getting Started
-* Make sure you have a [GitHub account](https://github.com/signup/free)
+* Create a [GitHub account](https://github.com/signup/free)
 * [Fork](https://github.com/arvindch/project-euler/fork) this repository on GitHub
-* Setup [Git](http://git-scm.com/) locally and connect it to GitHub
-* Clone your fork: `git clone https://github.com/user_name/project-euler.git`
+* [Setup](https://help.github.com/articles/set-up-git) Git locally and connect it to GitHub
+* Download your fork: `git clone https://github.com/user_name/project-euler.git`
 
 #### Start Coding
 * Choose a Project Euler problem
@@ -52,6 +55,6 @@ If all goes well, your solution will be accepted and merged!
 ### Help
 * [Python](https://docs.python.org/2/index.html)
 * [Git](http://git-scm.com/doc)
-* [Ubuntu](https://help.ubuntu.com/12.04/index.html)
+* [Ubuntu](https://help.ubuntu.com/14.04/index.html)
 * [Eclipse](http://help.eclipse.org/kepler/index.jsp)
 * [Linux/Bash Shell](http://linuxcommand.org/learning_the_shell.php)
