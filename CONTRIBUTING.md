@@ -26,7 +26,7 @@ You can:
 
 #### Start Coding
 * Choose a Project Euler problem
-* Create & Use a branch for your work: `git branch problem-n master`, `git checkout problem-n`
+* Create & Use a branch for your work: `git branch problem-n master`, `git checkout work`
 * Follow the Code Guidelines
 
 #### Validating & Timing
@@ -38,7 +38,7 @@ You can:
 #### Submitting Solutions
 * Check your changes: `git status`
 * Stage & Commit changes to your branch: `git add .`, `git commit`
-* Merge & Push changes to your fork: `git checkout master`, `git merge problem-n`, `git push`
+* Merge & Push changes to your fork: `git checkout master`, `git merge work`, `git push`
 * Submit a [Pull Request](https://github.com/arvindch/project-euler/compare/)
 * Wait for other maintainers to review your code...
 
