@@ -228,6 +228,7 @@ def setup_test():
     set_test_type()
     set_problems()
 
+
 def setup_env():
     
     global dirs
