@@ -137,7 +137,9 @@ def timer(py_file):
 
 def run_test():
     
-    global test_type
+    global user_name, test_type
+    
+    print '@%s\n' % user_name
     
     print 'Starting Test...\n'
     
@@ -167,8 +169,6 @@ def setup_test():
             with open(usr_file_path, 'w+') as usrf:
                 usrf.write(user_name)
             print ''
-        
-        return user_name
     
     def set_test_type():
         
@@ -184,13 +184,12 @@ def setup_test():
         # validate choice and setup params
         if to_run == 'v':
             test_type = {'name': 'Validation', 'function': validation}
-            return True
         elif to_run == 't':
             test_type = {'name': 'Timing', 'function': timing}
-            return True
         else:
-            print 'Invalid choice!\n'
-            return False
+            print 'Invalid choice!'
+            print 'Try again...\n'
+            set_test_type()
     
     def set_problems():
         
@@ -226,14 +225,8 @@ def setup_test():
     
     
     set_user_name()
-    print '@%s\n' % user_name
-    
-    if set_test_type():
-        set_problems()
-        return True
-    else:
-        return False
-
+    set_test_type()
+    set_problems()
 
 def setup_env():
     
@@ -255,11 +248,10 @@ def main():
     
     print 'Test started!\n'
     
-    if setup_test():
-        run_test()
-        print 'Test successful!'
-    else:
-        print 'Test failed!'
+    setup_test()
+    run_test()
+    
+    print 'Test complete!'
 
 
 if __name__ == '__main__':
