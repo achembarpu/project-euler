@@ -4,7 +4,7 @@
 import signal
 import time
 
-from src.custom import excepts
+from src_py.custom import excepts
 
 
 class Timer(object):
