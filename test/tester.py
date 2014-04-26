@@ -2,18 +2,18 @@
 
 import importlib
 import os
+import subprocess
 import sys
 import time
 
-from src.custom import tools, excepts
+from src_py.custom import tools, excepts
 
 
 # Tweakable Parameters
-
 test_time = 60  # seconds
 test_runs = 10  # loops
 
-global dirs, user_name, test_type, problems
+global lang, dirs, user_name, test_type, problems
 
 
 def validation():
@@ -31,7 +31,7 @@ def validator(prob_num):
     print '%s:' % prob_num
     
     # import problem solution as module
-    module_path = 'src.solutions.' + prob_num
+    module_path = 'src_py.solutions.' + prob_num
     usr_file = '%s_%s' % (prob_num, user_name)
     prob_dir = dirs['solutions'] + '/' + prob_num
     ans_file_path = prob_dir + '/answer.txt'
@@ -111,7 +111,7 @@ def timer(py_file):
     module_name = py_file[0:-3]
     problem_num = module_name[0:3]
     
-    solution = importlib.import_module('src.solutions.%s.%s' % (problem_num, module_name))
+    solution = importlib.import_module('src_py.solutions.%s.%s' % (problem_num, module_name))
     
     # initiate times
     overall_time = 0.0
@@ -137,9 +137,9 @@ def timer(py_file):
 
 def run_test():
     
-    global user_name, test_type
+    global user_name, lang, test_type
     
-    print '@%s\n' % user_name
+    print '@%s in %s:\n' % (user_name, lang)
     
     print 'Starting Test...\n'
     
@@ -151,6 +151,38 @@ def run_test():
 
 
 def setup_test():
+    
+    def setup_dirs():
+        
+        global dirs, lang
+        
+        # setup working dirs
+        dirs = {}
+        dirs['test'] = os.getcwd()
+        dirs['project'] = dirs['test'][0:-len('/test')]
+    
+    def set_lang():
+        
+        global dirs, lang
+        
+        # obtain username
+        lang_file_path = dirs['test'] + '/lang.txt'
+        
+        # read from info file - lang.txt
+        try:
+            with open(lang_file_path, 'r') as langf:
+                lang = str(langf.read())
+        # or, get and save preferred language for future use
+        except IOError:
+            print 'Choose programming language:'
+            print '[py, cpp, java]'
+            lang = raw_input('>')
+            with open(lang_file_path, 'w+') as langf:
+                langf.write(lang)
+            print ''
+        
+        # set matching source directory
+        dirs['solutions'] = '%s/src_%s/solutions' % (dirs['project'], lang)
     
     def set_user_name():
         
@@ -215,37 +247,22 @@ def setup_test():
         # validate problem numbers
         for prob in reversed(problems):  # strings are at list end
             try:
-                # when int found, stop
                 int(prob)
-                break
+                break  # when int found, stop
             except ValueError:
                 # remove all invalid input
                 problems.remove(prob)
                 continue
     
     
+    setup_dirs()
+    set_lang()
     set_user_name()
     set_test_type()
     set_problems()
 
 
-def setup_env():
-    
-    global dirs
-    
-    # setup working dirs
-    dirs = {}
-    dirs['test'] = os.getcwd()
-    dirs['project'] = dirs['test'][0:-len('/test')]
-    dirs['solutions'] = dirs['project'] + '/src/solutions'
-    
-    # append project dir to PYTHONPATH
-    sys.path.append(dirs['project'])
-
-
 def main():
-    
-    setup_env()
     
     print 'Test started!\n'
     
