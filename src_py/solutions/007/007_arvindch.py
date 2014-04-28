@@ -4,7 +4,7 @@ __author__ = 'Arvind Chembarpu'
 __email__ = 'achembarpu@gmail.com'
 
 
-from src.custom import misc
+from src_py.custom import misc
 
 
 def main():

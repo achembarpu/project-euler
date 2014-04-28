@@ -1,3 +1,5 @@
+# Python
+
 *.py[cod]
 
 # C extensions
@@ -35,6 +37,48 @@ nosetests.xml
 .project
 .pydevproject
 
+
+# C++
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+
+# Java
+
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs
+hs_err_pid*
+
+
 # Temporary Files
 *.*~
 
@@ -43,4 +87,4 @@ user.txt
 lang.txt
 
 # Code Testing files
-temp.py
+test.*

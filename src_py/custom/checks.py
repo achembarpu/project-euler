@@ -3,7 +3,7 @@
 
 import math
 
-from src.custom import params
+from src_py.custom import params
 
 
 def is_prime(number):

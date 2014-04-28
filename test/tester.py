@@ -2,82 +2,135 @@
 
 import importlib
 import os
+import subprocess
 import sys
 import time
 
-from src.custom import tools, excepts
+from src_py.custom import tools, excepts
 
 
 # Tweakable Parameters
-
 test_time = 60  # seconds
 test_runs = 10  # loops
 
-global dirs, user_name, test_type, problems
+global lang, dirs, user_name, test_type, problems
+global DEVNULL
+
+
+def get_answer(file_path, file_name):
+    
+    global lang
+    
+    if lang == 'py':
+        run_cmd = 'python %s/%s' % (file_path, file_name)
+    elif lang == 'cpp':
+        compile_cmd = 'g++ -o %s/ans.out %s/%s' % (file_path, file_path, file_name)
+        subprocess.check_output(compile_cmd.split(' '))  # compile .cpp
+        run_cmd = '%s/ans.out' % (file_path)
+    elif lang == 'java':
+        pass
+    
+    answer = subprocess.check_output(run_cmd.split(' '))
+    
+    return answer.strip()
 
 
 def validation():
     
     global problems
     
+    def validator(prob_num):
+        
+        global dirs, user_name
+        
+        print '%s:' % prob_num,
+        
+        # setup solution info
+        usr_file = '%s_%s.%s' % (prob_num, user_name, lang)
+        prob_dir = '%s/%s' % (dirs['solutions'], prob_num)
+        usr_file_path = '%s/%s' % (prob_dir, usr_file)
+        ans_file_path = '%s/answer.txt' % (prob_dir)        
+        
+        # validate problem solution
+        try:  # handle missing solution
+            with open(usr_file_path, 'r'):
+                pass
+        except IOError:
+            print 'Solution file does not exist!\n'
+            return
+        
+        try:  # handle slow solutions
+            with tools.Timeout(test_time):
+                solution_out = get_answer(prob_dir, usr_file)
+        except excepts.TimeoutError:
+            print 'Timed out!\n'
+            return
+        
+        try:  # handle invalid output
+            float(solution_out)  # all answers are floats
+            str(solution_out)  # filter out error msgs
+        except (ValueError, TypeError):
+            print 'Invalid output!\n'
+            return
+        
+        try:  # handle non-existent answer.txt
+            with open(ans_file_path, 'r') as ansf:
+                expect_ans = str(ansf.read())
+        except IOError:
+            print ans_file_path
+            print 'Answer file does not exist!\n'
+            return
+        
+        user_ans = str(solution_out)
+        
+        if user_ans == expect_ans:
+            print 'Valid Answer!\n'
+            return
+        else:
+            print 'Invalid Answer!\n'
+            return
+    
+    
     for prob_num in problems:
         validator(prob_num)
-
-
-def validator(prob_num):
-    
-    global dirs, user_name
-    
-    print '%s:' % prob_num
-    
-    # import problem solution as module
-    module_path = 'src.solutions.' + prob_num
-    usr_file = '%s_%s' % (prob_num, user_name)
-    prob_dir = dirs['solutions'] + '/' + prob_num
-    ans_file_path = prob_dir + '/answer.txt'
-    
-    
-    # validate problem solution
-    try:  # handle missing solution
-        solution = importlib.import_module('%s.%s' % (module_path, usr_file))
-    except ImportError:
-        print 'Solution file does not exist!\n'
-        return
-    
-    try:  # handle slow solutions
-        with tools.Timeout(test_time):
-            solution_out = solution.main()
-    except excepts.TimeoutError:
-        print 'Timed out!\n'
-        return
-    
-    try:  # handle invalid output
-        user_ans = str(solution_out)
-    except ValueError:
-        print 'Invalid output!\n'
-        return
-    
-    try:  # handle non-existent answer.txt
-        with open(ans_file_path, 'r') as ansf:
-            expect_ans = str(ansf.read())
-    except IOError:
-        print 'Answer file does not exist!\n'
-        return
-    
-    if user_ans == expect_ans:
-        print 'Valid Answer!\n'
-        return
-    else:
-        print 'Invalid Answer!\n'
-        return
 
 
 def timing():
     
     global problems, dirs, test_runs
     
-    # level 1 - problems
-    for prob_num in problems:
+    def timer(py_file):
+        
+        # import python file as module
+        module_name = py_file[0:-3]
+        problem_num = module_name[0:3]
+        
+        solution = importlib.import_module('src_%s.solutions.%s.%s' % (lang, problem_num, module_name))
+        
+        # initiate times
+        overall_time = 0.0
+        
+        # time main() for test_runs, to get avg time
+        for _ in xrange(test_runs):
+            
+            start_time = time.clock()
+            
+            solution.main()
+            
+            end_time = time.clock()
+            
+            interval_time = end_time - start_time
+            overall_time += interval_time
+        
+        avg_time = overall_time / test_runs
+        
+        exec_time = '%s s' % avg_time
+        
+        return exec_time
+    
+    
+    # traverse problems
+    for prob_num in problems:  # level 1 - problems
         print '\n%s:\n' % prob_num
         
         # setup dirs
@@ -91,10 +144,9 @@ def timing():
             testing_info = '%s @ %s\n\n' % (user_name, run_time)
             timef.write(testing_info)
             
-            # level 2 - solutions
-            for py_file in os.listdir(prob_dir):
+            for py_file in os.listdir(prob_dir):  # level 2 - solutions
                 # ignore non-solutions
-                if py_file[-3:] == '.py' and py_file[1] != '_':
+                if py_file[-3:] == lang and py_file[1] != '_':
                     try:  # handle slow solutions
                         with tools.Timeout(test_time):
                             timing_info = timer(py_file)
@@ -105,41 +157,11 @@ def timing():
                     timef.write(exec_info)
 
 
-def timer(py_file):
-    
-    # import python file as module
-    module_name = py_file[0:-3]
-    problem_num = module_name[0:3]
-    
-    solution = importlib.import_module('src.solutions.%s.%s' % (problem_num, module_name))
-    
-    # initiate times
-    overall_time = 0.0
-    
-    # time main() for test_runs, to get avg time
-    for _ in xrange(test_runs):
-        
-        start_time = time.clock()
-        
-        solution.main()
-        
-        end_time = time.clock()
-        
-        interval_time = end_time - start_time
-        overall_time += interval_time
-    
-    avg_time = overall_time / test_runs
-    
-    exec_time = '%s s' % avg_time
-    
-    return exec_time
-
-
 def run_test():
     
-    global user_name, test_type
+    global user_name, lang, test_type
     
-    print '@%s\n' % user_name
+    print '@%s in %s:\n' % (user_name, lang)
     
     print 'Starting Test...\n'
     
@@ -151,6 +173,37 @@ def run_test():
 
 
 def setup_test():
+    
+    def setup_dirs():
+        
+        global dirs, lang
+        
+        # setup working dirs
+        dirs = {}
+        dirs['test'] = os.getcwd()
+        dirs['project'] = dirs['test'][0:-len('/test')]
+    
+    def set_lang():
+        
+        global dirs, lang
+        
+        # obtain username
+        lang_file_path = dirs['test'] + '/lang.txt'
+        
+        # read from info file - lang.txt
+        try:
+            with open(lang_file_path, 'r') as langf:
+                lang = str(langf.read())
+        # or, get and save preferred language for future use
+        except IOError:
+            print 'Choose programming language: [py, cpp, java]'
+            lang = raw_input('>')
+            with open(lang_file_path, 'w+') as langf:
+                langf.write(lang)
+            print ''
+        
+        # set matching source directory
+        dirs['solutions'] = '%s/src_%s/solutions' % (dirs['project'], lang)
     
     def set_user_name():
         
@@ -165,7 +218,8 @@ def setup_test():
                 user_name = str(usrf.read())
         # or, get and save username for future use
         except IOError:
-            user_name = raw_input('Enter User Name:')
+            print 'Enter User Name:'
+            user_name = raw_input('>')
             with open(usr_file_path, 'w+') as usrf:
                 usrf.write(user_name)
             print ''
@@ -215,15 +269,16 @@ def setup_test():
         # validate problem numbers
         for prob in reversed(problems):  # strings are at list end
             try:
-                # when int found, stop
                 int(prob)
-                break
+                break  # when int found, stop
             except ValueError:
                 # remove all invalid input
                 problems.remove(prob)
                 continue
     
     
+    setup_dirs()
+    set_lang()
     set_user_name()
     set_test_type()
     set_problems()
@@ -231,25 +286,20 @@ def setup_test():
 
 def setup_env():
     
-    global dirs
+    global DEVNULL, dirs
     
-    # setup working dirs
-    dirs = {}
-    dirs['test'] = os.getcwd()
-    dirs['project'] = dirs['test'][0:-len('/test')]
-    dirs['solutions'] = dirs['project'] + '/src/solutions'
-    
-    # append project dir to PYTHONPATH
+    # set null output pipe
+    DEVNULL = open(os.devnull, 'w')
+    # set PYTHONPATH
     sys.path.append(dirs['project'])
 
 
 def main():
     
-    setup_env()
-    
     print 'Test started!\n'
     
     setup_test()
+    setup_env()
     run_test()
     
     print 'Test complete!'
