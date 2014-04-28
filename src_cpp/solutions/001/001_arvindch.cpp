@@ -10,7 +10,7 @@ int main()
 	{
 		if(n%3==0 || n%5==0)
 		{
-				req_sum += n;
+			req_sum += n;
 		}
 	}
 
