@@ -11,8 +11,10 @@ You can:
 
 #### System Setup
 
-* Required:
+* Required: (minimum versions)
   * Python - [2.7.x](https://www.python.org/download/releases/2.7.6/)
+  * GCC - [4.7.x](http://gcc.gnu.org/gcc-4.7/)
+  * JDK - [7ux](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
   * Git - [latest](http://git-scm.com/downloads)
 * Recommended:
   * OS - [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/)
@@ -46,15 +48,13 @@ If all goes well, your solution will be accepted and merged!
 
 ## Code Guidelines:
 
-* Keep your code [pythonic](http://legacy.python.org/dev/peps/pep-0020/).
-* Refer [pre-existing solutions](https://github.com/arvindch/project-euler/tree/master/src/solutions) for formatting styles.
-* Preferably, avoid the usage of non-default Python modules.
-* Reusable functions should be [modularized and categorized](https://github.com/arvindch/project-euler/tree/master/src/custom).
-* Use the [Timer() class](https://github.com/arvindch/project-euler/blob/master/src/custom/tools.py#L10), to conveniently time your solutions/code-snippets.
+* Keep your code clean and readable.
+* Refer pre-existing source for formatting styles.
+* Preferably, avoid the usage of non-default modules/headers/packages.
+* Reusable functions should be modularized and categorized.
 
 ### Help
-* [Python](https://docs.python.org/2/index.html)
 * [Git](http://git-scm.com/doc)
-* [Ubuntu](https://help.ubuntu.com/14.04/index.html)
 * [Eclipse](http://help.eclipse.org/kepler/index.jsp)
+* [Ubuntu](https://help.ubuntu.com/14.04/index.html)
 * [Linux/Bash Shell](http://linuxcommand.org/learning_the_shell.php)
