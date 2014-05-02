@@ -86,6 +86,7 @@ hs_err_pid*
 .gradle
 bin/
 tmp/
+Debug/
 *.tmp
 *.bak
 *.swp
