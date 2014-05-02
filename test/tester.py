@@ -22,13 +22,13 @@ def get_answer(file_path, file_name):
     global lang
     
     if lang == 'py':
-        run_cmd = 'python %s/%s' % (file_path, file_name)
+        run_cmd = 'python2 %s/%s' % (file_path, file_name)
     elif lang == 'cpp':
         compile_cmd = 'g++ -o %s/ans.out %s/%s' % (file_path, file_path, file_name)
         subprocess.check_output(compile_cmd.split(' '))  # compile .cpp
         run_cmd = '%s/ans.out' % (file_path)
     elif lang == 'java':
-        pass
+        run_cmd = ''
     
     answer = subprocess.check_output(run_cmd.split(' '))
     
@@ -95,12 +95,10 @@ def validation():
         validator(prob_num)
 
 
-def timing():
+def get_timing(file_path, file_name):
     
-    global problems, dirs, test_runs
+    def py_timer(py_file):
     
-    def timer(py_file):
-        
         # import python file as module
         module_name = py_file[0:-3]
         problem_num = module_name[0:3]
@@ -128,6 +126,59 @@ def timing():
         
         return exec_time
     
+    def cpp_timer(file_path, file_name):
+        
+        sol_file_path = '%s/%s' % (file_path, file_name)
+        
+        with open('temp.cpp', 'w+') as runfile:
+            
+            with open(sol_file_path, 'r') as solfile:
+                lines = solfile.xreadlines()
+                line = next(lines)
+                
+                while 'using' not in line:
+                    runfile.write(line)
+                    line = next(lines)
+                
+                with open('cpp-timer-1.txt', 'r') as cpt1:
+                    runfile.write(cpt1.read())
+                
+                while line != '{\n':
+                    line = next(lines)
+                line = next(lines)
+                
+                while 'cout' not in line:
+                    runfile.write(line.strip())
+                    line = next(lines)
+            
+            runfile.write('\n')
+            with open('cpp-timer-2.txt', 'r') as cpt2:
+                runfile.write(cpt2.read())
+        
+        compile_cmd = 'g++ -o temp.out temp.cpp'
+        subprocess.check_output(compile_cmd.split(' '))
+        run_cmd = './temp.out'
+        exec_time = subprocess.check_output(run_cmd.split(' '))
+            
+        return exec_time
+    
+    def java_timer():
+        pass
+    
+    
+    if lang == 'py':
+        timing_info = py_timer(file_name)
+    elif lang == 'cpp':
+        timing_info = cpp_timer(file_path, file_name)
+    elif lang == 'java':
+        timing_info = ''
+    
+    return timing_info.strip()
+
+
+def timing():
+    
+    global user_name, problems, dirs, test_runs
     
     # traverse problems
     for prob_num in problems:  # level 1 - problems
@@ -144,15 +195,17 @@ def timing():
             testing_info = '%s @ %s\n\n' % (user_name, run_time)
             timef.write(testing_info)
             
-            for py_file in os.listdir(prob_dir):  # level 2 - solutions
+            for sol_file in os.listdir(prob_dir):  # level 2 - solutions
+                # get file extension
+                file_ext = sol_file.split('.')[1]
                 # ignore non-solutions
-                if py_file[-3:] == lang and py_file[1] != '_':
+                if file_ext == lang and prob_num in sol_file:
                     try:  # handle slow solutions
                         with tools.Timeout(test_time):
-                            timing_info = timer(py_file)
+                            timing_info = get_timing(prob_dir, sol_file)
                     except excepts.TimeoutError:
                         timing_info = 'Timed out!'
-                    exec_info = '%s - %s\n' % (py_file[4:-3], timing_info)
+                    exec_info = '%s - %s\n' % (user_name, timing_info)
                     print exec_info[0:-len('\n')]
                     timef.write(exec_info)
 
@@ -169,7 +222,7 @@ def run_test():
     
     test_type['function']()
     
-    print '%s complete!\n' % test_type['name']
+    print '\n%s complete!\n' % test_type['name']
 
 
 def setup_test():
@@ -187,7 +240,7 @@ def setup_test():
         
         global dirs, lang
         
-        # obtain username
+        # obtain coding language
         lang_file_path = dirs['test'] + '/lang.txt'
         
         # read from info file - lang.txt
@@ -247,7 +300,7 @@ def setup_test():
     
     def set_problems():
         
-        global problems
+        global dirs, problems
         
         # obtain problems
         print 'Problem Numbers: (NNN or all)'
