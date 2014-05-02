@@ -115,6 +115,7 @@ local.properties
 
 
 # Temporary Files
+temp.*
 *.*~
 
 # Information Files
