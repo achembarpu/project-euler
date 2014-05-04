@@ -4,21 +4,18 @@ __author__ = 'Arvind Chembarpu'
 __email__ = 'achembarpu@gmail.com'
 
 
-from src_py.custom import gens
+from py.custom import lists
 
 
 def main():
     
-    giv_lim = 4000000
+    giv_lim = 2000000
     req_sum = 0
     
-    fib_nums = gens.fibonacci_gen()
+    prime_nums = lists.primes_list(giv_lim)
     
-    for n in fib_nums:
-        if n > giv_lim:
-            break
-        if n % 2 == 0:
-            req_sum += n
+    for n in prime_nums:
+        req_sum += n
     
     return req_sum
 

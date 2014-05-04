@@ -3,7 +3,7 @@
 
 import math
 
-from src_py.custom import params
+from src.py.custom import params
 
 
 def primes_list(limit=params.prime_lim):

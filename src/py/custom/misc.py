@@ -1,7 +1,7 @@
 # Miscellaneous
 
 
-from src_py.custom import lists
+from src.py.custom import lists
 
 
 def nth_prime(n):

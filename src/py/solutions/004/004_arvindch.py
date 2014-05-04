@@ -4,7 +4,7 @@ __author__ = 'Arvind Chembarpu'
 __email__ = 'achembarpu@gmail.com'
 
 
-from src_py.custom import checks
+from py.custom import checks
 
 
 def main():

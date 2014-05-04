@@ -4,20 +4,17 @@ __author__ = 'Arvind Chembarpu'
 __email__ = 'achembarpu@gmail.com'
 
 
-from src_py.custom import lists
+from py.custom import misc
 
 
 def main():
     
-    giv_lim = 2000000
-    req_sum = 0
+    giv_n = 10001
+    req_num = 0
     
-    prime_nums = lists.primes_list(giv_lim)
+    req_num = misc.nth_prime(giv_n)
     
-    for n in prime_nums:
-        req_sum += n
-    
-    return req_sum
+    return req_num
 
 
 if __name__ == '__main__':
