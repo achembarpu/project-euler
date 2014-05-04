@@ -6,7 +6,7 @@ import subprocess
 import sys
 import time
 
-from src_py.custom import tools, excepts
+from src.py.custom import tools, excepts
 
 
 # Tweakable Parameters
@@ -37,7 +37,7 @@ def get_answer(file_path, file_name):
 
 def validation():
     
-    global problems
+    global dirs, problems
     
     def validator(prob_num):
         
@@ -49,7 +49,7 @@ def validation():
         usr_file = '%s_%s.%s' % (prob_num, user_name, lang)
         prob_dir = '%s/%s' % (dirs['solutions'], prob_num)
         usr_file_path = '%s/%s' % (prob_dir, usr_file)
-        ans_file_path = '%s/answer.txt' % (prob_dir)        
+        ans_file_path = '%s/%s.txt' % (dirs['project']+'/data/answers', prob_num)        
         
         # validate problem solution
         try:  # handle missing solution
@@ -75,9 +75,8 @@ def validation():
         
         try:  # handle non-existent answer.txt
             with open(ans_file_path, 'r') as ansf:
-                expect_ans = str(ansf.read())
+                expect_ans = str(ansf.read()).strip()
         except IOError:
-            print ans_file_path
             print 'Answer file does not exist!\n'
             return
         
@@ -256,7 +255,7 @@ def setup_test():
             print ''
         
         # set matching source directory
-        dirs['solutions'] = '%s/src_%s/solutions' % (dirs['project'], lang)
+        dirs['solutions'] = '%s/src/%s/solutions' % (dirs['project'], lang)
     
     def set_user_name():
         
