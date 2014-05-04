@@ -4,7 +4,7 @@ __author__ = 'Arvind Chembarpu'
 __email__ = 'achembarpu@gmail.com'
 
 
-from py.custom import gens
+from src.py.custom import gens
 
 
 def main():

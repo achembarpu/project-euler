@@ -6,7 +6,7 @@ __email__ = 'achembarpu@gmail.com'
 
 import math
 
-from py.custom import lists
+from src.py.custom import lists
 
 
 def main():

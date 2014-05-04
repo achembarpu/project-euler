@@ -4,7 +4,7 @@ __author__ = 'Arvind Chembarpu'
 __email__ = 'achembarpu@gmail.com'
 
 
-from py.custom import lists
+from src.py.custom import lists
 
 
 def main():
