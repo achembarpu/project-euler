@@ -6,6 +6,8 @@ import subprocess
 import sys
 import time
 
+sys.path.append(os.getcwd()[0:-len('/test')])
+
 from src.py.custom import tools, excepts
 
 
@@ -342,8 +344,6 @@ def setup_env():
     
     # set null output pipe
     DEVNULL = open(os.devnull, 'w')
-    # set PYTHONPATH
-    sys.path.append(dirs['project'])
 
 
 def main():
