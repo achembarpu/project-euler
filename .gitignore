@@ -114,13 +114,17 @@ local.properties
 .texlipse
 
 
-# Temporary Files
+# Temporary files
 temp.*
 *.*~
 
-# Information Files
+# Information files
 user.txt
 lang.txt
 
 # Code Testing files
 test.*
+
+# Debugging & Logging files
+debug.*
+*.log
