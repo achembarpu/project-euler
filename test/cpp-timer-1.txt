@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <time.h>
 
 using namespace std;
@@ -6,4 +7,3 @@ double timer(void)
 {
 	clock_t tStart = clock();
 	/* START CODE*/
-	
