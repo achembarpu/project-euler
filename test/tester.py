@@ -1,349 +1,402 @@
 #!/usr/bin/env python2.7
 
 import importlib
+import logging
 import os
 import subprocess
 import sys
 import time
 
+# set PYTHONPATH
 sys.path.append(os.getcwd()[0:-len('/test')])
 
 from src.py.custom import tools, excepts
 
 
-# Tweakable Parameters
-test_time = 60  # seconds
-test_runs = 10  # loops
+# open logfile, for debug
+with open('debug.log', 'w+') as debugf:
+    pass  # clear pre-existing log
+# create a new log
+logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
-global lang, dirs, user_name, test_type, problems
-global DEVNULL
+
+# Tweakable Parameters
+test_runs = 10  # loops, for average
+max_solve_time = 60  # seconds
+prob_num_len = 3  # NNN
+
+
+global dirs, user, lang, test_type, problems
+global count
+count = 0
 
 
 def get_answer(file_path, file_name):
     
-    global lang
+    def py_answer():
+        
+        # setup module info
+        module_name = file_name.split('.')[0]
+        problem_num = module_name[0:prob_num_len]
+        
+        # import solution as module
+        solution = importlib.import_module('src.py.solutions.%s.%s' \
+                                           % (problem_num, module_name))
+        # run module
+        answer = str(solution.main())
+        
+        return answer
     
-    if lang == 'py':
-        run_cmd = 'python2 %s/%s' % (file_path, file_name)
-    elif lang == 'cpp':
+    def cpp_answer():
+        
+        # compile source
         compile_cmd = 'g++ -o %s/ans.out %s/%s' % (file_path, file_path, file_name)
-        subprocess.check_output(compile_cmd.split(' '))  # compile .cpp
+        subprocess.check_output(compile_cmd.split(' '))
+        
+        # run executable
         run_cmd = '%s/ans.out' % (file_path)
-    elif lang == 'java':
-        run_cmd = ''
+        answer = subprocess.check_output(run_cmd.split(' '))
+        
+        return answer
     
-    answer = subprocess.check_output(run_cmd.split(' '))
     
-    return answer.strip()
+    options = {'py': py_answer, 'cpp': cpp_answer}
+    
+    answer = options[lang]().strip()
+    
+    return answer
 
 
 def validation():
     
-    global dirs, problems
-    
-    def validator(prob_num):
+    def validator(prob):
         
-        global dirs, user_name
-        
-        print '%s:' % prob_num,
-        
-        # setup solution info
-        usr_file = '%s_%s.%s' % (prob_num, user_name, lang)
-        prob_dir = '%s/%s' % (dirs['solutions'], prob_num)
-        usr_file_path = '%s/%s' % (prob_dir, usr_file)
-        ans_file_path = '%s/%s.txt' % (dirs['project']+'/data/answers', prob_num)        
+        # setup paths
+        prob_dir_path = '%s/%s' % (dirs['solutions'], prob)
+        usr_file_name = '%s_%s.%s' % (prob, user, lang)
+        usr_file_path = '%s/%s' % (prob_dir_path, usr_file_name)
+        ans_file_path = '%s/%s.txt' % (dirs['answers'], prob)
         
         # validate problem solution
         try:  # handle missing solution
             with open(usr_file_path, 'r'):
                 pass
         except IOError:
-            print 'Solution file does not exist!\n'
-            return
+            return 'Solution file does not exist!\n'
         
         try:  # handle slow solutions
-            with tools.Timeout(test_time):
-                solution_out = get_answer(prob_dir, usr_file)
+            with tools.Timeout(max_solve_time):
+                solution_out = get_answer(prob_dir_path, usr_file_name)
         except excepts.TimeoutError:
-            print 'Timed out!\n'
-            return
+            return 'Timed out!\n'
         
         try:  # handle invalid output
             float(solution_out)  # all answers are floats
             str(solution_out)  # filter out error msgs
         except (ValueError, TypeError):
-            print 'Invalid output!\n'
-            return
+            return 'Invalid output!\n'
         
         try:  # handle non-existent answer.txt
             with open(ans_file_path, 'r') as ansf:
                 expect_ans = str(ansf.read()).strip()
         except IOError:
-            print 'Answer file does not exist!\n'
-            return
+            return 'Answer file does not exist!\n'
         
         user_ans = str(solution_out)
         
         if user_ans == expect_ans:
-            print 'Valid Answer!\n'
-            return
+            return 'Valid Answer!\n'
         else:
-            print 'Invalid Answer!\n'
-            return
+            return 'Invalid Answer!\n'
     
     
-    for prob_num in problems:
-        validator(prob_num)
+    # validate all solutions
+    for prob in problems:
+        print '%s:' % (prob),
+        print validator(prob)
 
 
-def get_timing(file_path, file_name):
+def get_time(file_path, file_name):
     
-    def py_timer(py_file):
-    
-        # import python file as module
-        module_name = py_file[0:-3]
-        problem_num = module_name[0:3]
+    def py_time():
         
-        solution = importlib.import_module('src_%s.solutions.%s.%s' % (lang, problem_num, module_name))
+        # setup module info
+        module_name = file_name.split('.')[0]
+        problem_num = module_name[0:prob_num_len]
         
-        # initiate times
-        overall_time = 0.0
+        # import solution as module
+        solution = importlib.import_module('src.py.solutions.%s.%s' \
+                                           % (problem_num, module_name))
         
         # time main() for test_runs, to get avg time
+        overall_time = 0.0  # seconds
         for _ in xrange(test_runs):
             
             start_time = time.clock()
             
             solution.main()
             
-            end_time = time.clock()
-            
-            interval_time = end_time - start_time
-            overall_time += interval_time
+            overall_time += (time.clock() - start_time)
         
+        # calculate average runtime
         avg_time = overall_time / test_runs
         
-        exec_time = '%s s' % avg_time
-        
-        return exec_time
+        return avg_time
     
-    def cpp_timer(file_path, file_name):
+    def cpp_time():
         
+        def parse_source():
+            
+            with open('temp.cpp', 'w+') as tempf:
+                
+                # copy part 1 of timer source
+                with open(cpptimer_p1_file_path, 'r') as partf1:
+                    tempf.write(partf1.read())
+                
+                # copy solution source
+                try:
+                    with open(sol_file_path, 'r') as solf:
+                        
+                        # start reading source code
+                        sol_code = solf.xreadlines()
+                        code_line = next(sol_code)
+                        logging.info('started parsing source of %s:' % (file_name))
+                        
+                        # ignore preprocessor lines
+                        while 'include' in code_line:
+                            code_line = next(sol_code)
+                        logging.info('preprocessor lines parsed')
+                        
+                        # ignore namespace line
+                        while 'namespace' not in code_line:
+                            code_line = next(sol_code)
+                        logging.info('namespace line parsed')
+                        
+                        # move to start of actual source
+                        while '(' not in code_line:
+                            code_line = next(sol_code)
+                        logging.info('blank lines parsed')
+                        logging.info('reached main function, at line: %s' \
+                                     % (code_line.strip()))
+                        
+                        if 'main' in code_line:
+                            pass  # skip main() def
+                        else:
+                            tempf.write(code_line)
+                        code_line = next(sol_code)
+                        
+                        if '{' in code_line:
+                            pass  # skip { def
+                        else:
+                            tempf.write(code_line)
+                        code_line = next(sol_code)
+                        
+                        logging.info('starting real code parse, at line: %s' \
+                                     % (code_line.strip()))
+                        # write rest of of source to temp
+                        while 'printf' not in code_line:
+                            tempf.write(code_line)
+                            code_line = next(sol_code)
+                        logging.info('stopping real code parse, before line: %s' \
+                                     % (code_line.strip()))
+                        
+                except Exception as e:
+                        logging.exception('Caught exception after: %s' % (code_line))
+                
+                # copy part 2 of timer source
+                with open(cpptimer_p2_file_path, 'r') as partf2:
+                    tempf.write(partf2.read())
+        
+        
+        # setup paths
         sol_file_path = '%s/%s' % (file_path, file_name)
+        cpptimer_dir_path = '%s/cpp-timer' % (dirs['misc'])
+        cpptimer_p1_file_path = '%s/part1.txt' % (cpptimer_dir_path)
+        cpptimer_p2_file_path = '%s/part2.txt' % (cpptimer_dir_path)
         
-        with open('temp.cpp', 'w+') as runfile:
-            
-            with open(sol_file_path, 'r') as solfile:
-                lines = solfile.xreadlines()
-                line = next(lines)
-                
-                while 'using' not in line:
-                    runfile.write(line)
-                    line = next(lines)
-                
-                with open('cpp-timer-1.txt', 'r') as cpt1:
-                    runfile.write(cpt1.read())
-                
-                while line != '{\n':
-                    line = next(lines)
-                line = next(lines)
-                
-                while 'cout' not in line:
-                    runfile.write(line.strip())
-                    line = next(lines)
-            
-            runfile.write('\n')
-            with open('cpp-timer-2.txt', 'r') as cpt2:
-                runfile.write(cpt2.read())
+        # parse and create timable source
+        parse_source()
         
+        # compile source
         compile_cmd = 'g++ -o temp.out temp.cpp'
         subprocess.check_output(compile_cmd.split(' '))
+        
+        # run executable
         run_cmd = './temp.out'
-        exec_time = subprocess.check_output(run_cmd.split(' '))
-            
-        return exec_time
+        avg_time = subprocess.check_output(run_cmd.split(' ')).strip()
+
+        return avg_time
     
-    def java_timer():
-        pass
+    options = {'py': py_time, 'cpp': cpp_time}
     
+    avg_time = options[lang]()
     
-    if lang == 'py':
-        timing_info = py_timer(file_name)
-    elif lang == 'cpp':
-        timing_info = cpp_timer(file_path, file_name)
-    elif lang == 'java':
-        timing_info = ''
+    time_info = '%s s' % (avg_time)
     
-    return timing_info.strip()
+    return time_info
 
 
 def timing():
     
-    global user_name, problems, dirs, test_runs
-    
-    # traverse problems
-    for prob_num in problems:  # level 1 - problems
-        print '\n%s:\n' % prob_num
+    def timer(prob):
         
-        # setup dirs
-        prob_dir = dirs['solutions'] + '/' + prob_num
-        timings_file_path = prob_dir + '/timings.txt'
+        # setup paths
+        prob_dir_path = '%s/%s' % (dirs['solutions'], prob)
+        timings_file_path = '%s/timings.txt' % (prob_dir_path)
         
-        run_time = time.strftime('%d %b %Y %H:%M:%S GMT', time.gmtime())
-        
-        # open timings.txt to store exec_times
+        # store timings for each solution
         with open(timings_file_path, 'w+') as timef:
-            testing_info = '%s @ %s\n\n' % (user_name, run_time)
-            timef.write(testing_info)
             
-            for sol_file in os.listdir(prob_dir):  # level 2 - solutions
-                # get file extension
-                file_ext = sol_file.split('.')[1]
-                # ignore non-solutions
-                if file_ext == lang and prob_num in sol_file:
-                    try:  # handle slow solutions
-                        with tools.Timeout(test_time):
-                            timing_info = get_timing(prob_dir, sol_file)
-                    except excepts.TimeoutError:
-                        timing_info = 'Timed out!'
-                    exec_info = '%s - %s\n' % (user_name, timing_info)
-                    print exec_info[0:-len('\n')]
-                    timef.write(exec_info)
+            # store runtime info
+            run_time = time.strftime('%d %b %Y %H:%M:%S GMT\n', time.gmtime())
+            tester_run_info = '%s @ %s\n' % (user, run_time)
+            timef.write(tester_run_info)
+            
+            # filter and create solutions list
+            solutions = [sol_file for sol_file in os.listdir(prob_dir_path) \
+                         if sol_file.split('.')[1] == lang \
+                         and prob in sol_file]
+            
+            # sort for cleaner testing
+            solutions.sort()
+            
+            # time all solutions
+            for sol_file in solutions:
+                
+                # get username of contributor
+                user_name = sol_file.split('_')[1].split('.')[0]
+                
+                # get timing info for solution
+                try:  # handle slow solutions
+                    with tools.Timeout(max_solve_time):
+                        timing_info = get_time(prob_dir_path, sol_file)
+                except excepts.TimeoutError:
+                    timing_info = 'Timed out!'
+                
+                exec_info = '%s - %s\n' % (user_name, timing_info)
+                timef.write(exec_info)
+                yield exec_info[0:-len('\n')]
+    
+    
+    # time all solutions
+    for prob in problems:
+        print '%s:' % (prob)
+        for run_info in timer(prob):
+            print run_info
+        print ''
 
 
 def run_test():
     
-    global user_name, lang, test_type
+    run_time = time.strftime('%d %b %Y %H:%M:%S GMT', time.gmtime())
     
-    print '@%s in %s:\n' % (user_name, lang)
+    print '%s in %s, at %s:\n' % (user, lang, run_time)
     
-    print 'Starting Test...\n'
-    
-    print '%s started!\n' % test_type['name']
+    print '%s started!\n' % (test_type['name'])
     
     test_type['function']()
     
-    print '\n%s complete!\n' % test_type['name']
+    print '%s complete!\n' % (test_type['name'])
 
 
 def setup_test():
     
-    def setup_dirs():
+    global dirs, user, lang, test_type, problems
+    
+    def get_dirs():
         
-        global dirs, lang
-        
-        # setup working dirs
+        # setup working directory structure
         dirs = {}
         dirs['test'] = os.getcwd()
         dirs['project'] = dirs['test'][0:-len('/test')]
+        dirs['source'] = '%s/src' % (dirs['project'])
+        dirs['data'] = '%s/data' % (dirs['project'])
+        dirs['info'] = '%s' % (dirs['data'])
+        dirs['misc'] = '%s/misc' % (dirs['data'])
+        dirs['answers'] = '%s/answers' % (dirs['data'])
+        
+        return dirs
     
-    def set_lang():
+    def get_info(data):
         
-        global dirs, lang
-        
-        # obtain coding language
-        lang_file_path = dirs['test'] + '/lang.txt'
-        
-        # read from info file - lang.txt
-        try:
-            with open(lang_file_path, 'r') as langf:
-                lang = str(langf.read())
-        # or, get and save preferred language for future use
-        except IOError:
-            print 'Choose programming language: [py, cpp, java]'
-            lang = raw_input('>')
-            with open(lang_file_path, 'w+') as langf:
-                langf.write(lang)
+        info_file_path = '%s/%s.txt' % (dirs['info'], data['filename'])
+        # obtain data
+        try:  # check if data is already saved
+            with open(info_file_path, 'r') as infof:
+                req_info = str(infof.read())
+        except IOError:  # ask for data
+            print data['prompt']
+            req_info = raw_input('>')
             print ''
+            
+            # save data for future use
+            with open(info_file_path, 'w+') as infof:
+                infof.write(req_info)
         
-        # set matching source directory
-        dirs['solutions'] = '%s/src/%s/solutions' % (dirs['project'], lang)
+        return req_info
     
-    def set_user_name():
-        
-        global dirs, user_name
-        
-        # obtain username
-        usr_file_path = dirs['test'] + '/user.txt'
-        
-        # read from info file - user.txt
-        try:
-            with open(usr_file_path, 'r') as usrf:
-                user_name = str(usrf.read())
-        # or, get and save username for future use
-        except IOError:
-            print 'Enter User Name:'
-            user_name = raw_input('>')
-            with open(usr_file_path, 'w+') as usrf:
-                usrf.write(user_name)
-            print ''
-    
-    def set_test_type():
-        
-        global test_type
+    def get_test_type():
         
         # obtain testing action
-        print 'Actions:'
-        print 'v - Validate'
-        print 't - Time'
+        print 'Choose action: [v - Validate, t - Time]'
         to_run = raw_input('>')
         print ''
         
-        # validate choice and setup params
+        # validate choice and setup info_params
         if to_run == 'v':
             test_type = {'name': 'Validation', 'function': validation}
         elif to_run == 't':
             test_type = {'name': 'Timing', 'function': timing}
-        else:
+        else:  # try again
             print 'Invalid choice!'
             print 'Try again...\n'
-            set_test_type()
+            return get_test_type()
+        
+        return test_type
     
-    def set_problems():
+    def get_problems():
         
-        global dirs, problems
-        
-        # obtain problems
-        print 'Problem Numbers: (NNN or all)'
-        probs = raw_input('>')
+        # obtain problems to test
+        print 'Enter problems: [NNN or all]'
+        probs_list = raw_input('>')
         print ''
         
-        problems = []
-        
-        if probs == 'all':
-            for prob_dir in os.listdir(dirs['solutions']):
-                problems.append(prob_dir[0:3])
+        # choose problems list source
+        if probs_list == 'all':
+            prob_nums_list = os.listdir(dirs['solutions'])
         else:
-            for prob in probs.split(' '):
-                problems.append(prob)
+            prob_nums_list = probs_list.split(' ')
         
-        # for cleaner testing and easier validation
+        # create problem list
+        problems = [prob_num.zfill(prob_num_len) for prob_num in prob_nums_list \
+                    if prob_num.isdigit()]
+        
+        # sort for cleaner testing
         problems.sort()
         
-        # validate problem numbers
-        for prob in reversed(problems):  # strings are at list end
-            try:
-                int(prob)
-                break  # when int found, stop
-            except ValueError:
-                # remove all invalid input
-                problems.remove(prob)
-                continue
+        # check if problems list is empty
+        if not problems:
+            print 'No valid problems to test!'
+            print 'Try again...\n'
+            return get_problems()
+        
+        return problems
     
     
-    setup_dirs()
-    set_lang()
-    set_user_name()
-    set_test_type()
-    set_problems()
-
-
-def setup_env():
+    # setup working directories
+    dirs = get_dirs()
     
-    global DEVNULL, dirs
+    # setup user info
+    user = get_info({'prompt': 'Enter username:', 'filename': 'user'})
+    lang = get_info({'prompt': 'Choose programming language: [py, cpp]', \
+                     'filename': 'lang'})
     
-    # set null output pipe
-    DEVNULL = open(os.devnull, 'w')
+    # set solutions directory
+    dirs['solutions'] = '%s/%s/solutions' % (dirs['source'], lang)
+    
+    # setup test parameters
+    test_type = get_test_type()
+    problems = get_problems()
 
 
 def main():
@@ -351,7 +404,6 @@ def main():
     print 'Test started!\n'
     
     setup_test()
-    setup_env()
     run_test()
     
     print 'Test complete!'
