@@ -1,5 +1,3 @@
-package _001;
-
 public class _001_arvindch {
 
 	public static void main(String[] args) {
