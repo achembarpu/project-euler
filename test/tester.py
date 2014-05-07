@@ -27,8 +27,6 @@ prob_num_len = 3  # NNN
 
 
 global dirs, user, lang, test_type, problems
-global count
-count = 0
 
 
 def get_answer(file_path, file_name):
@@ -342,12 +340,14 @@ def setup_test():
         to_run = raw_input('>')
         print ''
         
-        # validate choice and setup info_params
-        if to_run == 'v':
-            test_type = {'name': 'Validation', 'function': validation}
-        elif to_run == 't':
-            test_type = {'name': 'Timing', 'function': timing}
-        else:  # try again
+        # setup info_params
+        
+        options = {'v': {'name': 'Validation', 'function': validation}, \
+                   't': {'name': 'Timing', 'function': timing}}
+        
+        try:  # validate choice
+            test_type = options[to_run]
+        except KeyError:  # try again
             print 'Invalid choice!'
             print 'Try again...\n'
             return get_test_type()
@@ -387,9 +387,14 @@ def setup_test():
     dirs = get_dirs()
     
     # setup user info
-    user = get_info({'prompt': 'Enter username:', 'filename': 'user'})
-    lang = get_info({'prompt': 'Choose programming language: [py, cpp]', \
-                     'filename': 'lang'})
+    
+    options = {'user': {'prompt': 'Enter username:', 'filename': 'user'}, \
+               'lang': {'prompt': 'Choose programming language: [py, cpp]', \
+                        'filename': 'lang'}}
+    
+    user = get_info(options['user'])
+    
+    lang = get_info(options['lang'])
     
     # set solutions directory
     dirs['solutions'] = '%s/%s/solutions' % (dirs['source'], lang)
