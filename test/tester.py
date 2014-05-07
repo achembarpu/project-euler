@@ -160,7 +160,7 @@ def get_time(file_path, file_name):
                         # start reading source code
                         sol_code = solf.xreadlines()
                         code_line = next(sol_code)
-                        logging.info('started parsing source of %s:' % (file_name))
+                        logging.info('started parsing source of <%s>:' % (file_name))
                         
                         # ignore preprocessor lines
                         while 'include' in code_line:
@@ -176,7 +176,7 @@ def get_time(file_path, file_name):
                         while '(' not in code_line:
                             code_line = next(sol_code)
                         logging.info('blank lines parsed')
-                        logging.info('reached main function, at line: %s' \
+                        logging.info('reached main function, at line: <%s>' \
                                      % (code_line.strip()))
                         
                         if 'main' in code_line:
@@ -191,17 +191,17 @@ def get_time(file_path, file_name):
                             tempf.write(code_line)
                         code_line = next(sol_code)
                         
-                        logging.info('starting real code parse, at line: %s' \
+                        logging.info('starting real code parse, at line: <%s>' \
                                      % (code_line.strip()))
                         # write rest of of source to temp
                         while 'printf' not in code_line:
                             tempf.write(code_line)
                             code_line = next(sol_code)
-                        logging.info('stopping real code parse, before line: %s' \
+                        logging.info('stopping real code parse, before line: <%s>' \
                                      % (code_line.strip()))
                         
                 except Exception as e:
-                        logging.exception('Caught exception after: %s' % (code_line))
+                        logging.exception('Caught exception after: <%s>' % (code_line))
                 
                 # copy part 2 of timer source
                 with open(cpptimer_p2_file_path, 'r') as partf2:
@@ -224,7 +224,7 @@ def get_time(file_path, file_name):
         # run executable
         run_cmd = './temp.out'
         avg_time = subprocess.check_output(run_cmd.split(' ')).strip()
-
+        
         return avg_time
     
     options = {'py': py_time, 'cpp': cpp_time}
@@ -323,7 +323,7 @@ def setup_test():
         # obtain data
         try:  # check if data is already saved
             with open(info_file_path, 'r') as infof:
-                req_info = str(infof.read())
+                req_info = str(infof.read()).strip()
         except IOError:  # ask for data
             print data['prompt']
             req_info = raw_input('>')
