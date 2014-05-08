@@ -193,7 +193,7 @@ def get_time(file_path, file_name):
                         logger.info('starting real code parse, at line: <%s>' \
                                      % (code_line.strip()))
                         # write rest of of source to temp
-                        while 'printf' not in code_line:
+                        while 'cout' not in code_line:
                             tempf.write(code_line)
                             code_line = next(sol_code)
                         logger.info('stopping real code parse, before line: <%s>' \
