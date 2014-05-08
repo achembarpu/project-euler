@@ -211,7 +211,7 @@ def get_time(file_path, file_name):
                         tempf.write(partf2.read())
                     
             except Exception:
-                    logger.exception('Caught exception after: <%s>' % (code_line))
+                    logger.exception('Caught exception!)
                     with open('temp.cpp', 'r') as tempf:
                         logger.debug('temp.cpp contents:\n' + tempf.read())
         
