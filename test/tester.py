@@ -13,13 +13,6 @@ sys.path.append(os.getcwd()[0:-len('/test')])
 from src.py.custom import tools, excepts
 
 
-# open logfile, for debug
-with open('debug.log', 'w+') as debugf:
-    pass  # clear pre-existing log
-# create a new log
-logging.basicConfig(filename='debug.log', level=logging.DEBUG)
-
-
 # Tweakable Parameters
 test_runs = 10  # loops, for average
 max_solve_time = 60  # seconds
@@ -172,48 +165,39 @@ def get_time(file_path, file_name):
                         # start reading source code
                         sol_code = solf.xreadlines()
                         code_line = next(sol_code)
-                        logging.info('started parsing source of <%s>:' % (file_name))
+                        logger.info('started parsing source of <%s>:' % (file_name))
                         
                         # ignore preprocessor lines
                         while 'include' in code_line:
                             code_line = next(sol_code)
-                        logging.info('preprocessor lines parsed')
+                        logger.info('preprocessor lines parsed')
                         
                         # ignore namespace line
                         while 'namespace' not in code_line:
                             code_line = next(sol_code)
-                        logging.info('namespace line parsed')
+                        logger.info('namespace line parsed')
                         
                         # move to start of actual source
                         while '(' not in code_line:
                             code_line = next(sol_code)
-                        logging.info('blank lines parsed')
-                        logging.info('reached main function, at line: <%s>' \
+                        logger.info('blank lines parsed')
+                        logger.info('reached main function, at line: <%s>' \
                                      % (code_line.strip()))
                         
-                        if 'main' in code_line:
-                            pass  # skip main() def
-                        else:
-                            tempf.write(code_line)
-                        code_line = next(sol_code)
+                        code_line = next(sol_code)  # skip main() def
+                        code_line = next(sol_code)  # skip { def
                         
-                        if '{' in code_line:
-                            pass  # skip { def
-                        else:
-                            tempf.write(code_line)
-                        code_line = next(sol_code)
-                        
-                        logging.info('starting real code parse, at line: <%s>' \
+                        logger.info('starting real code parse, at line: <%s>' \
                                      % (code_line.strip()))
                         # write rest of of source to temp
                         while 'printf' not in code_line:
                             tempf.write(code_line)
                             code_line = next(sol_code)
-                        logging.info('stopping real code parse, before line: <%s>' \
+                        logger.info('stopping real code parse, before line: <%s>' \
                                      % (code_line.strip()))
                         
                 except Exception as e:
-                        logging.exception('Caught exception after: <%s>' % (code_line))
+                        logger.exception('Caught exception after: <%s>' % (code_line))
                 
                 # copy part 2 of timer source
                 with open(cpptimer_p2_file_path, 'r') as partf2:
@@ -421,10 +405,35 @@ def setup_test():
     problems = get_problems()
 
 
+def init_test():
+    
+    global logger
+    
+    # open logfile, for debug
+    with open('debug.log', 'w+'):
+        pass  # clear pre-existing debug_log
+    
+    # create logger
+    logger = logging.getLogger('tester')
+    logger.setLevel(logging.DEBUG)
+    
+    # add debug_log handler
+    debug_log = logging.FileHandler('debug.log')
+    debug_log.setLevel(logging.DEBUG)
+    
+    # create logger info formatter
+    log_format = logging.Formatter('%(levelname)s: %(message)s')
+    debug_log.setFormatter(log_format)
+    
+    # connect logger and log file
+    logger.addHandler(debug_log)
+
+
 def main():
     
     print 'Test started!\n'
     
+    init_test()
     setup_test()
     run_test()
     
