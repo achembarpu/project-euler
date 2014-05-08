@@ -153,14 +153,14 @@ def get_time(file_path, file_name):
         
         def parse_source():
             
-            with open('temp.cpp', 'w+') as tempf:
-                
-                # copy part 1 of timer source
-                with open(cpptimer_p1_file_path, 'r') as partf1:
-                    tempf.write(partf1.read())
-                
-                # copy solution source
-                try:
+            try:
+                with open('temp.cpp', 'w+') as tempf:
+                    
+                    # copy part 1 of timer source
+                    with open(cpptimer_p1_file_path, 'r') as partf1:
+                        tempf.write(partf1.read())
+                    
+                    # copy solution source
                     with open(sol_file_path, 'r') as solf:
                         
                         logger.info('parsing source of <%s>:\n' % (file_name))
@@ -169,6 +169,11 @@ def get_time(file_path, file_name):
                         sol_code = solf.xreadlines()
                         code_line = next(sol_code)
                         logger.info('START')
+                        
+                        # ignore authorship comments
+                        while '//' in code_line:
+                            code_line = next(code_line)
+                        logger.info('authorship comments parsed')
                         
                         # ignore preprocessor lines
                         while 'include' in code_line:
@@ -200,13 +205,15 @@ def get_time(file_path, file_name):
                                      % (code_line.strip()))
                         
                         logger.info('STOP\n')
-                        
-                except Exception:
-                        logger.exception('Caught exception after: <%s>' % (code_line))
-                
-                # copy part 2 of timer source
-                with open(cpptimer_p2_file_path, 'r') as partf2:
-                    tempf.write(partf2.read())
+                    
+                    # copy part 2 of timer source
+                    with open(cpptimer_p2_file_path, 'r') as partf2:
+                        tempf.write(partf2.read())
+                    
+            except Exception:
+                    logger.exception('Caught exception after: <%s>' % (code_line))
+                    with open('temp.cpp', 'r') as tempf:
+                        logger.debug('temp.cpp contents:\n' + tempf.read())
         
         
         # setup paths
