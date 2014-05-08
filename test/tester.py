@@ -239,7 +239,10 @@ def get_time(file_path, file_name):
         
         return avg_time
     
-    options = {'py': py_time, 'cpp': cpp_time}
+    def java_time():
+        return 'Not supported!'
+    
+    options = {'py': py_time, 'cpp': cpp_time, 'java': java_time}
     
     avg_time = options[lang]()
     
