@@ -20,6 +20,7 @@ prob_num_len = 3  # NNN
 
 
 global dirs, user, lang, test_type, problems
+global logger
 
 
 def get_answer(file_path, file_name):
@@ -162,10 +163,12 @@ def get_time(file_path, file_name):
                 try:
                     with open(sol_file_path, 'r') as solf:
                         
+                        logger.info('parsing source of <%s>:\n' % (file_name))
+                        
                         # start reading source code
                         sol_code = solf.xreadlines()
                         code_line = next(sol_code)
-                        logger.info('started parsing source of <%s>:' % (file_name))
+                        logger.info('START')
                         
                         # ignore preprocessor lines
                         while 'include' in code_line:
@@ -196,7 +199,9 @@ def get_time(file_path, file_name):
                         logger.info('stopping real code parse, before line: <%s>' \
                                      % (code_line.strip()))
                         
-                except Exception as e:
+                        logger.info('STOP\n')
+                        
+                except Exception:
                         logger.exception('Caught exception after: <%s>' % (code_line))
                 
                 # copy part 2 of timer source
@@ -289,7 +294,11 @@ def run_test():
     
     run_time = time.strftime('%d %b %Y %H:%M:%S GMT', time.gmtime())
     
-    print '%s in %s, at %s:\n' % (user, lang, run_time)
+    run_info = '%s in %s, at %s:\n' % (user, lang, run_time)
+    
+    logger.info(run_info)
+    
+    print run_info
     
     print '%s started!\n' % (test_type['name'])
     
