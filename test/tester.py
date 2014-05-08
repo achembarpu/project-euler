@@ -172,7 +172,7 @@ def get_time(file_path, file_name):
                         
                         # ignore authorship comments
                         while '//' in code_line:
-                            code_line = next(code_line)
+                            code_line = next(sol_code)
                         logger.info('authorship comments parsed')
                         
                         # ignore preprocessor lines
