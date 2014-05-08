@@ -283,7 +283,7 @@ def timing():
                 
                 # get timing info for solution
                 try:  # handle slow solutions
-                    with tools.Timeout(max_solve_time):
+                    with tools.Timeout(max_solve_time*test_runs):
                         timing_info = get_time(prob_dir_path, sol_file)
                 except excepts.TimeoutError:
                     timing_info = 'Timed out!'
