@@ -47,18 +47,29 @@ def get_answer(file_path, file_name):
     
     def cpp_answer():
         
-        # compile source
+        # compile .cpp source
         compile_cmd = 'g++ -o %s/ans.out %s/%s' % (file_path, file_path, file_name)
         subprocess.check_output(compile_cmd.split(' '))
         
-        # run executable
+        # run .out executable
         run_cmd = '%s/ans.out' % (file_path)
         answer = subprocess.check_output(run_cmd.split(' '))
         
         return answer
     
+    def java_answer():
+        
+        # compile .java source
+        compile_cmd = 'javac %s/%s' % (file_path, file_name)
+        subprocess.check_output(compile_cmd.split(' '))
+        
+        # run .class
+        run_cmd = 'java -cp %s %s' % (file_path, file_name[0:-len('.java')])
+        answer = subprocess.check_output(run_cmd.split(' '))
+        
+        return answer
     
-    options = {'py': py_answer, 'cpp': cpp_answer}
+    options = {'py': py_answer, 'cpp': cpp_answer, 'java': java_answer}
     
     answer = options[lang]().strip()
     
@@ -71,7 +82,10 @@ def validation():
         
         # setup paths
         prob_dir_path = '%s/%s' % (dirs['solutions'], prob)
-        usr_file_name = '%s_%s.%s' % (prob, user, lang)
+        if lang == 'java':
+            usr_file_name = '_%s_%s.%s' % (prob, user, lang)
+        else:
+            usr_file_name = '%s_%s.%s' % (prob, user, lang)
         usr_file_path = '%s/%s' % (prob_dir_path, usr_file_name)
         ans_file_path = '%s/%s.txt' % (dirs['answers'], prob)
         
