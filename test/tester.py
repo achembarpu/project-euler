@@ -13,13 +13,6 @@ sys.path.append(os.getcwd()[0:-len('/test')])
 from src.py.custom import tools, excepts
 
 
-# open logfile, for debug
-with open('debug.log', 'w+') as debugf:
-    pass  # clear pre-existing log
-# create a new log
-logging.basicConfig(filename='debug.log', level=logging.DEBUG)
-
-
 # Tweakable Parameters
 test_runs = 10  # loops, for average
 max_solve_time = 60  # seconds
@@ -27,8 +20,7 @@ prob_num_len = 3  # NNN
 
 
 global dirs, user, lang, test_type, problems
-global count
-count = 0
+global logger
 
 
 def get_answer(file_path, file_name):
@@ -49,18 +41,29 @@ def get_answer(file_path, file_name):
     
     def cpp_answer():
         
-        # compile source
+        # compile .cpp source
         compile_cmd = 'g++ -o %s/ans.out %s/%s' % (file_path, file_path, file_name)
         subprocess.check_output(compile_cmd.split(' '))
         
-        # run executable
+        # run .out executable
         run_cmd = '%s/ans.out' % (file_path)
         answer = subprocess.check_output(run_cmd.split(' '))
         
         return answer
     
+    def java_answer():
+        
+        # compile .java source
+        compile_cmd = 'javac %s/%s' % (file_path, file_name)
+        subprocess.check_output(compile_cmd.split(' '))
+        
+        # run .class
+        run_cmd = 'java -cp %s %s' % (file_path, file_name[0:-len('.java')])
+        answer = subprocess.check_output(run_cmd.split(' '))
+        
+        return answer
     
-    options = {'py': py_answer, 'cpp': cpp_answer}
+    options = {'py': py_answer, 'cpp': cpp_answer, 'java': java_answer}
     
     answer = options[lang]().strip()
     
@@ -73,7 +76,10 @@ def validation():
         
         # setup paths
         prob_dir_path = '%s/%s' % (dirs['solutions'], prob)
-        usr_file_name = '%s_%s.%s' % (prob, user, lang)
+        if lang == 'java':
+            usr_file_name = '_%s_%s.%s' % (prob, user, lang)
+        else:
+            usr_file_name = '%s_%s.%s' % (prob, user, lang)
         usr_file_path = '%s/%s' % (prob_dir_path, usr_file_name)
         ans_file_path = '%s/%s.txt' % (dirs['answers'], prob)
         
@@ -147,65 +153,67 @@ def get_time(file_path, file_name):
         
         def parse_source():
             
-            with open('temp.cpp', 'w+') as tempf:
-                
-                # copy part 1 of timer source
-                with open(cpptimer_p1_file_path, 'r') as partf1:
-                    tempf.write(partf1.read())
-                
-                # copy solution source
-                try:
+            try:
+                with open('temp.cpp', 'w+') as tempf:
+                    
+                    # copy part 1 of timer source
+                    with open(cpptimer_p1_file_path, 'r') as partf1:
+                        tempf.write(partf1.read())
+                    
+                    # copy solution source
                     with open(sol_file_path, 'r') as solf:
+                        
+                        logger.info('parsing source of <%s>:\n' % (file_name))
                         
                         # start reading source code
                         sol_code = solf.xreadlines()
                         code_line = next(sol_code)
-                        logging.info('started parsing source of %s:' % (file_name))
+                        logger.info('START')
+                        
+                        # ignore authorship comments
+                        while '//' in code_line:
+                            code_line = next(sol_code)
+                        logger.info('authorship comments parsed')
                         
                         # ignore preprocessor lines
                         while 'include' in code_line:
                             code_line = next(sol_code)
-                        logging.info('preprocessor lines parsed')
+                        logger.info('preprocessor lines parsed')
                         
                         # ignore namespace line
                         while 'namespace' not in code_line:
                             code_line = next(sol_code)
-                        logging.info('namespace line parsed')
+                        logger.info('namespace line parsed')
                         
                         # move to start of actual source
                         while '(' not in code_line:
                             code_line = next(sol_code)
-                        logging.info('blank lines parsed')
-                        logging.info('reached main function, at line: %s' \
+                        logger.info('blank lines parsed')
+                        logger.info('reached main function, at line: <%s>' \
                                      % (code_line.strip()))
                         
-                        if 'main' in code_line:
-                            pass  # skip main() def
-                        else:
-                            tempf.write(code_line)
-                        code_line = next(sol_code)
+                        code_line = next(sol_code)  # skip main() def
+                        code_line = next(sol_code)  # skip { def
                         
-                        if '{' in code_line:
-                            pass  # skip { def
-                        else:
-                            tempf.write(code_line)
-                        code_line = next(sol_code)
-                        
-                        logging.info('starting real code parse, at line: %s' \
+                        logger.info('starting real code parse, at line: <%s>' \
                                      % (code_line.strip()))
                         # write rest of of source to temp
-                        while 'printf' not in code_line:
+                        while 'cout' not in code_line:
                             tempf.write(code_line)
                             code_line = next(sol_code)
-                        logging.info('stopping real code parse, before line: %s' \
+                        logger.info('stopping real code parse, before line: <%s>' \
                                      % (code_line.strip()))
                         
-                except Exception as e:
-                        logging.exception('Caught exception after: %s' % (code_line))
-                
-                # copy part 2 of timer source
-                with open(cpptimer_p2_file_path, 'r') as partf2:
-                    tempf.write(partf2.read())
+                        logger.info('STOP\n')
+                    
+                    # copy part 2 of timer source
+                    with open(cpptimer_p2_file_path, 'r') as partf2:
+                        tempf.write(partf2.read())
+                    
+            except Exception:
+                    logger.exception('Caught exception!')
+                    with open('temp.cpp', 'r') as tempf:
+                        logger.debug('temp.cpp contents:\n' + tempf.read())
         
         
         # setup paths
@@ -224,10 +232,13 @@ def get_time(file_path, file_name):
         # run executable
         run_cmd = './temp.out'
         avg_time = subprocess.check_output(run_cmd.split(' ')).strip()
-
+        
         return avg_time
     
-    options = {'py': py_time, 'cpp': cpp_time}
+    def java_time():
+        return 'Not supported!'
+    
+    options = {'py': py_time, 'cpp': cpp_time, 'java': java_time}
     
     avg_time = options[lang]()
     
@@ -268,7 +279,7 @@ def timing():
                 
                 # get timing info for solution
                 try:  # handle slow solutions
-                    with tools.Timeout(max_solve_time):
+                    with tools.Timeout(max_solve_time*test_runs):
                         timing_info = get_time(prob_dir_path, sol_file)
                 except excepts.TimeoutError:
                     timing_info = 'Timed out!'
@@ -290,7 +301,11 @@ def run_test():
     
     run_time = time.strftime('%d %b %Y %H:%M:%S GMT', time.gmtime())
     
-    print '%s in %s, at %s:\n' % (user, lang, run_time)
+    run_info = '%s in %s, at %s:\n' % (user, lang, run_time)
+    
+    logger.info(run_info)
+    
+    print run_info
     
     print '%s started!\n' % (test_type['name'])
     
@@ -323,7 +338,7 @@ def setup_test():
         # obtain data
         try:  # check if data is already saved
             with open(info_file_path, 'r') as infof:
-                req_info = str(infof.read())
+                req_info = str(infof.read()).strip()
         except IOError:  # ask for data
             print data['prompt']
             req_info = raw_input('>')
@@ -342,12 +357,14 @@ def setup_test():
         to_run = raw_input('>')
         print ''
         
-        # validate choice and setup info_params
-        if to_run == 'v':
-            test_type = {'name': 'Validation', 'function': validation}
-        elif to_run == 't':
-            test_type = {'name': 'Timing', 'function': timing}
-        else:  # try again
+        # setup info_params
+        
+        options = {'v': {'name': 'Validation', 'function': validation}, \
+                   't': {'name': 'Timing', 'function': timing}}
+        
+        try:  # validate choice
+            test_type = options[to_run]
+        except KeyError:  # try again
             print 'Invalid choice!'
             print 'Try again...\n'
             return get_test_type()
@@ -387,9 +404,14 @@ def setup_test():
     dirs = get_dirs()
     
     # setup user info
-    user = get_info({'prompt': 'Enter username:', 'filename': 'user'})
-    lang = get_info({'prompt': 'Choose programming language: [py, cpp]', \
-                     'filename': 'lang'})
+    
+    options = {'user': {'prompt': 'Enter username:', 'filename': 'user'}, \
+               'lang': {'prompt': 'Choose programming language: [py, cpp]', \
+                        'filename': 'lang'}}
+    
+    user = get_info(options['user'])
+    
+    lang = get_info(options['lang'])
     
     # set solutions directory
     dirs['solutions'] = '%s/%s/solutions' % (dirs['source'], lang)
@@ -399,10 +421,35 @@ def setup_test():
     problems = get_problems()
 
 
+def init_test():
+    
+    global logger
+    
+    # open logfile, for debug
+    with open('debug.log', 'w+'):
+        pass  # clear pre-existing debug_log
+    
+    # create logger
+    logger = logging.getLogger('tester')
+    logger.setLevel(logging.DEBUG)
+    
+    # add debug_log handler
+    debug_log = logging.FileHandler('debug.log')
+    debug_log.setLevel(logging.DEBUG)
+    
+    # create logger info formatter
+    log_format = logging.Formatter('%(levelname)s: %(message)s')
+    debug_log.setFormatter(log_format)
+    
+    # connect logger and log file
+    logger.addHandler(debug_log)
+
+
 def main():
     
     print 'Test started!\n'
     
+    init_test()
     setup_test()
     run_test()
     

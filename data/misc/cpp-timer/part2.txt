@@ -11,6 +11,6 @@ int main()
 		total_time += timer();
 	}
 	average_time = (total_time / runs);
-	printf("%f", average_time);
+	cout << average_time;
 	return 0;
 }

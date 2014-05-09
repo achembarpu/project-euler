@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 
 using namespace std;
 
@@ -14,6 +14,6 @@ int main()
 		}
 	}
 
-	printf("%d", req_sum);
+	cout << req_sum;
 	return 0;
 }
