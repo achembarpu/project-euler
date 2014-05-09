@@ -1,5 +1,10 @@
-#include<iostream>
+//Author: Kishor Bhat
+//Email: kishorbhat@gmail.com
+
+#include <iostream>
+
 using namespace std;
+
 int main()
 {
 	int i, sum = 0;
@@ -9,6 +14,6 @@ int main()
 		if((i % 3 == 0) || (i % 5 == 0))		
 			sum += i;
 	
-	cout << sum;
+	cout << sum << "\n";
 	return 0;
 }
