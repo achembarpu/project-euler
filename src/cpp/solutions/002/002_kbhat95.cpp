@@ -1,4 +1,7 @@
-#include <stdio.h>
+//Author: Kishor Bhat
+//Email: kishorbhat@gmail.com
+
+#include <iostream>
 
 using namespace std;
 
@@ -15,6 +18,6 @@ int main()
 		c = a + b;
 	}
 
-	printf("%d\n", sum);
+	cout << sum << "\n";
 	return 0;
 }
