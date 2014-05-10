@@ -212,8 +212,13 @@ def get_time(file_path, file_name):
                     
             except Exception:
                     logger.exception('Caught exception!')
+                    with open(sol_file_path, 'r') as solf:
+                        logger.debug('solution.cpp contents:\n' + solf.read())
                     with open('temp.cpp', 'r') as tempf:
                         logger.debug('temp.cpp contents:\n' + tempf.read())
+                    return False
+            
+            return True
         
         
         # setup paths
@@ -223,7 +228,8 @@ def get_time(file_path, file_name):
         cpptimer_p2_file_path = '%s/part2.txt' % (cpptimer_dir_path)
         
         # parse and create timable source
-        parse_source()
+        if not parse_source():
+            return 'Error!'
         
         # compile source
         compile_cmd = 'g++ -o temp.out temp.cpp'
