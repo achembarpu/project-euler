@@ -21,22 +21,6 @@ lib
 lib64
 __pycache__
 
-# Installer logs
-pip-log.txt
-
-# Unit test / coverage reports
-.coverage
-.tox
-nosetests.xml
-
-# Translations
-*.mo
-
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-
 
 # C++
 
@@ -67,26 +51,17 @@ nosetests.xml
 
 *.class
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
 # Package Files #
 *.jar
 *.war
 *.ear
 
-# virtual machine crash logs
-hs_err_pid*
-
 
 # Eclipse
 
-*.pydevproject
 .metadata
-.gradle
 bin/
 tmp/
-Debug/
 *.tmp
 *.bak
 *.swp
@@ -101,21 +76,15 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 
-# CDT-specific
-.cproject
-
-# PDT-specific
+# Plugin-specific
+.project
+.pydevproject
 .buildpath
-
-# sbteclipse plugin
-.target
-
-# TeXlipse plugin
-.texlipse
+.cproject
 
 
 # Temporary files
-temp.*
+*.tmp.*
 *.*~
 
 # Information files
