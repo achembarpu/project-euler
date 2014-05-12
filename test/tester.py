@@ -14,7 +14,7 @@ from src.py.custom import tools, excepts
 
 
 # Tweakable Parameters
-test_runs = 10  # loops, for average
+test_runs = {'py': 10, 'cpp': 25, 'java': 0}  # loops, for average
 max_solve_time = 60  # seconds
 prob_num_len = 3  # NNN
 
@@ -136,7 +136,7 @@ def get_time(file_path, file_name):
         
         # time main() for test_runs, to get avg time
         overall_time = 0.0  # seconds
-        for _ in xrange(test_runs):
+        for _ in xrange(test_runs[lang]):
             
             start_time = time.clock()
             
@@ -145,7 +145,7 @@ def get_time(file_path, file_name):
             overall_time += (time.clock() - start_time)
         
         # calculate average runtime
-        avg_time = overall_time / test_runs
+        avg_time = overall_time / test_runs[lang]
         
         return avg_time
     
@@ -156,9 +156,13 @@ def get_time(file_path, file_name):
             try:
                 with open('temp.cpp', 'w+') as tempf:
                     
-                    # copy part 1 of timer source
-                    with open(cpptimer_p1_file_path, 'r') as partf1:
-                        tempf.write(partf1.read())
+                    # copy test runs value
+                    trs = '#define TEST_RUNS %s \n' % (str(test_runs[lang]))
+                    tempf.write(trs)
+                    
+                    # copy timer source
+                    with open(cpptimer_file_path, 'r') as cpptsf:
+                        tempf.write(cpptsf.read())
                     
                     # copy solution source
                     with open(sol_file_path, 'r') as solf:
@@ -189,26 +193,25 @@ def get_time(file_path, file_name):
                         while '(' not in code_line:
                             code_line = next(sol_code)
                         logger.info('blank lines parsed')
-                        logger.info('reached main function, at line: <%s>' \
-                                     % (code_line.strip()))
                         
-                        code_line = next(sol_code)  # skip main() def
-                        code_line = next(sol_code)  # skip { def
+                        # rename main to run
+                        tempf.write(code_line.replace('main', 'run'))
                         
                         logger.info('starting real code parse, at line: <%s>' \
                                      % (code_line.strip()))
-                        # write rest of of source to temp
-                        while 'cout' not in code_line:
-                            tempf.write(code_line)
-                            code_line = next(sol_code)
-                        logger.info('stopping real code parse, before line: <%s>' \
+                        
+                        # parse remaining solution source
+                        for code_line in sol_code:
+                            if 'cout' not in code_line:
+                                tempf.write(code_line)
+                            else:
+                                logger.info('Skipped line: <%s>' \
+                                            % (code_line.strip()))
+                        
+                        logger.info('stopping real code parse, at line: <%s>' \
                                      % (code_line.strip()))
                         
                         logger.info('STOP\n')
-                    
-                    # copy part 2 of timer source
-                    with open(cpptimer_p2_file_path, 'r') as partf2:
-                        tempf.write(partf2.read())
                     
             except Exception:
                     logger.exception('Caught exception!')
@@ -224,8 +227,7 @@ def get_time(file_path, file_name):
         # setup paths
         sol_file_path = '%s/%s' % (file_path, file_name)
         cpptimer_dir_path = '%s/cpp-timer' % (dirs['misc'])
-        cpptimer_p1_file_path = '%s/part1.txt' % (cpptimer_dir_path)
-        cpptimer_p2_file_path = '%s/part2.txt' % (cpptimer_dir_path)
+        cpptimer_file_path = '%s/source.cpp' % (cpptimer_dir_path)
         
         # parse and create timable source
         if not parse_source():
@@ -285,7 +287,7 @@ def timing():
                 
                 # get timing info for solution
                 try:  # handle slow solutions
-                    with tools.Timeout(max_solve_time*test_runs):
+                    with tools.Timeout(max_solve_time*test_runs[lang]):
                         timing_info = get_time(prob_dir_path, sol_file)
                 except excepts.TimeoutError:
                     timing_info = 'Timed out!'
