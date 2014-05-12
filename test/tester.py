@@ -8,7 +8,7 @@ import sys
 import time
 
 # set PYTHONPATH
-sys.path.append(os.getcwd()[0:-len('/test')])
+sys.path.append(os.path.dirname(os.path.realpath(__file__))[0:-len('/test')])
 
 from src.py.custom import tools, excepts
 
@@ -341,8 +341,8 @@ def setup_test():
         
         # setup working directory structure
         dirs = {}
-        dirs['test'] = os.getcwd()
-        dirs['project'] = dirs['test'][0:-len('/test')]
+        dirs['project'] = (os.path.dirname(os.path.realpath(__file__))[0:-len('/test')])
+        dirs['test'] = '%s/test' % (dirs['project'])
         dirs['source'] = '%s/src' % (dirs['project'])
         dirs['data'] = '%s/data' % (dirs['project'])
         dirs['info'] = '%s' % (dirs['data'])
