@@ -84,6 +84,7 @@ local.properties
 
 
 # Temporary files
+temp.*
 *.tmp.*
 *.*~
 
