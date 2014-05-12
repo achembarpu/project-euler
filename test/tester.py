@@ -157,8 +157,7 @@ def get_time(file_path, file_name):
                 with open('temp.cpp', 'w+') as tempf:
                     
                     # copy test runs value
-                    trs = '#define TEST_RUNS %s \n' % (str(test_runs[lang]))
-                    tempf.write(trs)
+                    tempf.write('#define TEST_RUNS %s \n' % (str(test_runs[lang])))
                     
                     # copy timer source
                     with open(cpptimer_file_path, 'r') as cpptsf:
@@ -168,50 +167,61 @@ def get_time(file_path, file_name):
                     with open(sol_file_path, 'r') as solf:
                         
                         logger.info('parsing source of <%s>:\n' % (file_name))
+                        logger.info('START PARSE')
                         
-                        # start reading source code
-                        sol_code = solf.xreadlines()
-                        code_line = next(sol_code)
-                        logger.info('START')
-                        
-                        # ignore authorship comments
-                        while '//' in code_line:
-                            code_line = next(sol_code)
-                        logger.info('authorship comments parsed')
-                        
-                        # ignore preprocessor lines
-                        while 'include' in code_line:
-                            code_line = next(sol_code)
-                        logger.info('preprocessor lines parsed')
-                        
-                        # ignore namespace line
-                        while 'namespace' not in code_line:
-                            code_line = next(sol_code)
-                        logger.info('namespace line parsed')
-                        
-                        # move to start of actual source
-                        while '(' not in code_line:
-                            code_line = next(sol_code)
-                        logger.info('blank lines parsed')
-                        
-                        # rename main to run
-                        tempf.write(code_line.replace('main', 'run'))
-                        
-                        logger.info('starting real code parse, at line: <%s>' \
-                                     % (code_line.strip()))
-                        
-                        # parse remaining solution source
-                        for code_line in sol_code:
-                            if 'cout' not in code_line:
-                                tempf.write(code_line)
+                        # start analyzing source code
+                        is_source = False
+                        for code_line in solf.xreadlines():
+                            
+                            if code_line.strip() == '':
+                                continue
+                            
+                            if not is_source:
+                                
+                                # ignore comments
+                                if '//' in code_line:
+                                    logger.info('skipped comment: <%s>' \
+                                                % (code_line.strip()))
+                                    continue
+                                
+                                # copy required headers
+                                if 'include' in code_line:
+                                    if 'iostream' not in code_line:
+                                        logger.info('added header: <%s>' \
+                                                    % (code_line.strip()))
+                                        tempf.write(code_line)
+                                    else:  # ignore 'iostream'
+                                        continue
+                                
+                                # skip namespace setting
+                                if 'namespace' in code_line:
+                                    logger.info('skipped namespace: <%s>' \
+                                                % (code_line.strip()))
+                                    continue
+                                
+                                # copy function prototypes
+                                if '(' in code_line and ')' in code_line:
+                                    if 'main' not in code_line:
+                                        tempf.write(code_line)
+                                        logger.info('added function prototype: <%s>' \
+                                                    % (code_line.strip()))
+                                        continue
+                                    else:
+                                        # copy 'main' function as 'run'
+                                        tempf.write(code_line.replace('main', 'run'))
+                                        is_source = True
+                                        logger.info('reached main source: <%s>' \
+                                                    % (code_line.strip()))
+                                        continue
                             else:
-                                logger.info('Skipped line: <%s>' \
-                                            % (code_line.strip()))
+                                # copy source code
+                                if 'cout' not in code_line:
+                                    tempf.write(code_line)
+                                else:  # ignore 'cout'
+                                    logger.info('skipped statement: <%s>' % (code_line.strip()))
+                                    continue
                         
-                        logger.info('stopping real code parse, at line: <%s>' \
-                                     % (code_line.strip()))
-                        
-                        logger.info('STOP\n')
+                        logger.info('STOP PARSE\n')
                     
             except Exception:
                     logger.exception('Caught exception!')
@@ -287,7 +297,7 @@ def timing():
                 
                 # get timing info for solution
                 try:  # handle slow solutions
-                    with tools.Timeout(max_solve_time*test_runs[lang]):
+                    with tools.Timeout(max_solve_time * test_runs[lang]):
                         timing_info = get_time(prob_dir_path, sol_file)
                 except excepts.TimeoutError:
                     timing_info = 'Timed out!'
