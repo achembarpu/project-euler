@@ -218,7 +218,8 @@ def get_time(file_path, file_name):
                                 if 'cout' not in code_line:
                                     tempf.write(code_line)
                                 else:  # ignore 'cout'
-                                    logger.info('skipped statement: <%s>' % (code_line.strip()))
+                                    logger.info('skipped statement: <%s>' \
+                                                % (code_line.strip()))
                                     continue
                         
                         logger.info('STOP PARSE\n')
