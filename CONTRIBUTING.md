@@ -11,11 +11,12 @@ You can:
 
 #### System Setup
 
-* Required: (minimum versions)
+* Required: (_minimum versions_)
   * Python - [2.7.x](https://www.python.org/download/releases/2.7.6/)
   * GCC - [4.7.x](http://gcc.gnu.org/gcc-4.7/)
   * JDK - [7ux](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
   * Git - [latest](http://git-scm.com/downloads)
+
 * Recommended:
   * OS - [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/)
   * IDE - [Eclipse Standard 4.3.2](https://www.eclipse.org/downloads/packages/eclipse-standard-432/keplersr2) + [PyDev Plugin](http://pydev.org/download.html)
@@ -44,7 +45,7 @@ You can:
 * Submit a [Pull Request](https://github.com/arvindch/project-euler/compare/)
 * Wait for other maintainers to review your code...
 
-If all goes well, your solution will be accepted and merged!
+_If all goes well, your solution will be accepted and merged!_
 
 ## Code Guidelines:
 
@@ -53,7 +54,7 @@ If all goes well, your solution will be accepted and merged!
 * Preferably, avoid the usage of non-default modules/headers/packages.
 * Reusable functions should be modularized and categorized.
 
-### Help
+## Help
 * [Git](http://git-scm.com/doc)
 * [Eclipse](http://help.eclipse.org/kepler/index.jsp)
 * [Ubuntu](https://help.ubuntu.com/14.04/index.html)
