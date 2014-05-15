@@ -178,16 +178,15 @@ def get_time(file_path, file_name):
                             if code_line.strip() == '':
                                 continue
                             
-                            if not is_source:
+                            elif not is_source:
                                 
                                 # ignore comments
                                 if '//' in code_line:
                                     logger.info('skipped comment: <%s>' \
                                                 % (code_line.strip()))
-                                    continue
                                 
                                 # copy required headers
-                                if 'include' in code_line:
+                                elif 'include' in code_line:
                                     if 'iostream' not in code_line:
                                         logger.info('added header: <%s>' \
                                                     % (code_line.strip()))
@@ -196,25 +195,22 @@ def get_time(file_path, file_name):
                                         continue
                                 
                                 # skip namespace setting
-                                if 'namespace' in code_line:
+                                elif 'namespace' in code_line:
                                     logger.info('skipped namespace: <%s>' \
                                                 % (code_line.strip()))
-                                    continue
                                 
                                 # copy function prototypes
-                                if '(' in code_line and ')' in code_line:
+                                elif '(' in code_line and ')' in code_line:
                                     if 'main' not in code_line:
                                         tempf.write(code_line)
                                         logger.info('added function prototype: <%s>' \
                                                     % (code_line.strip()))
-                                        continue
                                     else:
                                         # copy 'main' function as 'run'
                                         tempf.write(code_line.replace('main', 'run'))
                                         is_source = True
                                         logger.info('reached main source: <%s>' \
                                                     % (code_line.strip()))
-                                        continue
                             else:
                                 # copy source code
                                 if 'cout' not in code_line:
@@ -222,7 +218,6 @@ def get_time(file_path, file_name):
                                 else:  # ignore 'cout'
                                     logger.info('skipped statement: <%s>' \
                                                 % (code_line.strip()))
-                                    continue
                         
                         logger.info('STOP PARSE\n')
                     
