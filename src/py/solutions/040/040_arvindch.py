@@ -4,24 +4,25 @@ __author__ = 'Arvind Chembarpu'
 __email__ = 'achembarpu@gmail.com'
 
 
+def digit_gen():
+    """
+    Generates digits of the natural numbers sequence
+    """
+    number = 0
+    while True:
+        number += 1
+        for digit in str(number):
+            yield int(digit)
+
+
 def main():
-    
-    def digit_gen():
-        """
-        Generates digits of the natural numbers sequence
-        """
-        number = 0
-        while True:
-            number += 1
-            for digit in str(number):
-                yield int(digit)
-    
     
     giv_last_dig = 10 ** 6
     req_prod = 1
     
     digits = digit_gen()
-    decimal_const = [next(digits) for _ in xrange(giv_last_dig)]
+    decimal_const = [next(digits) \
+                     for _ in xrange(giv_last_dig)]
     
     i = 1
     while i <= giv_last_dig:
