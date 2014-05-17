@@ -13,6 +13,7 @@ proj_dir = os.path.dirname(os.path.realpath(sys.argv[0]))[0:-len('/test')]
 sys.path.append(proj_dir)
 
 from src.py.custom import tools, excepts
+from data import answers
 
 
 # Tweakable Parameters
@@ -83,14 +84,13 @@ def validation():
         else:
             usr_file_name = '%s_%s.%s' % (prob, user, lang)
         usr_file_path = '%s/%s' % (prob_dir_path, usr_file_name)
-        ans_file_path = '%s/%s.txt' % (dirs['answers'], prob)
 
         # validate problem solution
         try:  # handle missing solution
             with open(usr_file_path, 'r'):
                 pass
         except IOError:
-            return 'Solution file does not exist!\n'
+            return 'Solution file missing!\n'
 
         try:  # handle slow solutions
             with tools.Timeout(max_solve_time):
@@ -104,11 +104,10 @@ def validation():
         except (ValueError, TypeError):
             return 'Invalid output!\n'
 
-        try:  # handle non-existent answer.txt
-            with open(ans_file_path, 'r') as ansf:
-                expect_ans = str(ansf.read()).strip()
-        except IOError:
-            return 'Answer file does not exist!\n'
+        try:  # handle unsaved answer
+            expect_ans = answers.get(prob)
+        except KeyError:
+            return 'Answer not saved!\n'
 
         user_ans = str(solution_out)
 
