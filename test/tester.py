@@ -159,7 +159,7 @@ def get_time(file_path, file_name):
                 with open('temp.cpp', 'w+') as tempf:
                     
                     # copy test runs value
-                    tempf.write('#define TEST_RUNS %s \n' % (str(test_runs[lang])))
+                    tempf.write('#define TEST_RUNS %s\n' % (str(test_runs[lang])))
                     
                     # copy timer source
                     with open(cpptimer_file_path, 'r') as cpptsf:
@@ -443,13 +443,13 @@ def init_test():
     
     # open logfile, for debug
     with open('debug.log', 'w+'):
-        pass  # clear pre-existing debug_log
+        pass  # clear pre-existing debug log
     
     # create logger
     logger = logging.getLogger('tester')
     logger.setLevel(logging.DEBUG)
     
-    # add debug_log handler
+    # add debug log handler
     debug_log = logging.FileHandler('debug.log')
     debug_log.setLevel(logging.DEBUG)
     
