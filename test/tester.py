@@ -233,8 +233,7 @@ def get_time(file_path, file_name):
 
         # setup paths
         sol_file_path = '%s/%s' % (file_path, file_name)
-        cpptimer_dir_path = '%s/cpp-timer' % (dirs['misc'])
-        cpptimer_file_path = '%s/source.cpp' % (cpptimer_dir_path)
+        cpptimer_file_path = '%s/cpp_timer_source.cpp' % (dirs['misc'])
 
         # parse and create timable source
         if not parse_source():
