@@ -8,20 +8,20 @@ from src.py.custom import gens
 
 
 def main():
-    
+
     giv_digits = 1000
     req_index = 0
-    
+
     fibs = gens.fibonacci_gen()
     next(fibs)  # skip 0
-    
+
     i = 1
     for n in fibs:
         if len(str(n)) == giv_digits:
             req_index = i
             break
         i += 1
-    
+
     return req_index
 
 

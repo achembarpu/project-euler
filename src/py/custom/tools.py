@@ -25,7 +25,7 @@ class Timer(object):
     def __exit__(self, *args):
         self.end = time.clock()
         self.interval = self.end - self.start
-        
+
         print "execution time = %s s" % (self.interval)
 
 
@@ -41,13 +41,13 @@ class Timeout(object):
     """
     def __init__(self, seconds=1):
         self.seconds = seconds
-    
+
     def handle_timeout(self, *args):
         raise excepts.TimeoutError()
-    
+
     def __enter__(self):
         signal.signal(signal.SIGALRM, self.handle_timeout)
         signal.alarm(self.seconds)
-    
+
     def __exit__(self, *args):
         signal.alarm(0)

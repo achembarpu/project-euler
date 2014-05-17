@@ -25,13 +25,13 @@ def pyth_triplet_gen(start, end):
 
 
 def main():
-    
+
     giv_sum = 1000
     inf_lim = giv_sum / 2
     req_prod = 0
-    
+
     pyth_triplets = pyth_triplet_gen(2, inf_lim)
-    
+
     for t in pyth_triplets:
         if misc.list_sum(t) == giv_sum:
             req_prod = int(misc.list_product(t))

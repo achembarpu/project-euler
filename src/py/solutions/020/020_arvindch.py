@@ -8,13 +8,13 @@ import math
 
 
 def main():
-    
+
     giv_num = math.factorial(100)
     req_sum = 0
-    
+
     for digit in str(giv_num):
         req_sum += int(digit)
-    
+
     return req_sum
 
 

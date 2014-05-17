@@ -8,15 +8,15 @@ from src.py.custom import lists
 
 
 def main():
-    
+
     giv_lim = 2000000
     req_sum = 0
-    
+
     prime_nums = lists.primes_list(giv_lim)
-    
+
     for n in prime_nums:
         req_sum += n
-    
+
     return req_sum
 
 
