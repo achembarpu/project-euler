@@ -45,7 +45,8 @@ def get_answer(file_path, file_name):
     def cpp_answer():
 
         # compile .cpp source
-        compile_cmd = 'g++ -o %s/ans.out %s/%s' % (file_path, file_path, file_name)
+        compile_cmd = ('g++ -o %s/ans.out %s/%s' \
+                       % (file_path, file_path, file_name))
         subprocess.check_output(compile_cmd.split(' '))
 
         # run .out executable
@@ -116,7 +117,6 @@ def validation():
         else:
             return 'Invalid Answer!\n'
 
-
     # validate all solutions
     for prob in problems:
         print '%s:' % (prob),
@@ -158,7 +158,8 @@ def get_time(file_path, file_name):
                 with open('temp.cpp', 'w+') as tempf:
 
                     # copy test runs value
-                    tempf.write('#define TEST_RUNS %s\n' % (str(test_runs[lang])))
+                    tempf.write('#define TEST_RUNS %s\n' \
+                                % (str(test_runs[lang])))
 
                     # copy timer source
                     with open(cpptimer_file_path, 'r') as cpptsf:
@@ -202,13 +203,14 @@ def get_time(file_path, file_name):
                                 elif '(' in code_line and ')' in code_line:
                                     if 'main' not in code_line:
                                         tempf.write(code_line)
-                                        logger.info('added function prototype: <%s>' \
+                                        logger.info('added prototype: <%s>' \
                                                     % (code_line.strip()))
                                     else:
                                         # copy 'main' function as 'run'
-                                        tempf.write(code_line.replace('main', 'run'))
+                                        ln = code_line.replace('main', 'run')
+                                        tempf.write(ln)
                                         is_source = True
-                                        logger.info('reached main source: <%s>' \
+                                        logger.info('at main source: <%s>' \
                                                     % (code_line.strip()))
                             else:
                                 # copy source code
@@ -229,7 +231,6 @@ def get_time(file_path, file_name):
                     return False
 
             return True
-
 
         # setup paths
         sol_file_path = '%s/%s' % (file_path, file_name)
@@ -301,7 +302,6 @@ def timing():
                 exec_info = '%s - %s\n' % (user_name, timing_info)
                 timef.write(exec_info)
                 yield exec_info[0:-len('\n')]
-
 
     # time all solutions
     for prob in problems:
@@ -399,7 +399,8 @@ def setup_test():
             prob_nums_list = probs_list.split(' ')
 
         # create problem list
-        problems = [prob_num.zfill(prob_num_len) for prob_num in prob_nums_list \
+        problems = [prob_num.zfill(prob_num_len) \
+                    for prob_num in prob_nums_list \
                     if prob_num.isdigit()]
 
         # sort for cleaner testing
@@ -412,7 +413,6 @@ def setup_test():
             return get_problems()
 
         return problems
-
 
     # setup working directories
     dirs = get_dirs()
