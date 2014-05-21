@@ -16,8 +16,9 @@ def main():
     for a in xrange(giv_low, giv_high):
         for b in xrange(a, giv_high):
             product = a * b
-            if checks.is_palindrome(product) and product > req_num:
-                req_num = product
+            if product > req_num:
+                if checks.is_palindrome(product):
+                    req_num = product
 
     return req_num
 
