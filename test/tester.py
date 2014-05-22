@@ -50,7 +50,7 @@ def get_answer(file_path, file_name):
         subprocess.check_output(compile_cmd.split(' '))
 
         # run .out executable
-        run_cmd = '%s/ans.out' % (file_path)
+        run_cmd = file_path + '/ans.out'
         answer = subprocess.check_output(run_cmd.split(' '))
 
         return answer
@@ -79,12 +79,12 @@ def validation():
     def validator(prob):
 
         # setup paths
-        prob_dir_path = '%s/%s' % (dirs['solutions'], prob)
+        prob_dir_path = dirs['solutions'] + '/' + prob
         if lang == 'java':
             usr_file_name = '_%s_%s.%s' % (prob, user, lang)
         else:
             usr_file_name = '%s_%s.%s' % (prob, user, lang)
-        usr_file_path = '%s/%s' % (prob_dir_path, usr_file_name)
+        usr_file_path = prob_dir_path + '/' + usr_file_name
 
         # validate problem solution
         try:  # handle missing solution
@@ -119,7 +119,7 @@ def validation():
 
     # validate all solutions
     for prob in problems:
-        print '%s:' % (prob),
+        print prob + ' :',
         print validator(prob)
 
 
@@ -146,9 +146,9 @@ def get_time(file_path, file_name):
             overall_time += (time.clock() - start_time)
 
         # calculate average runtime
-        avg_time = overall_time / test_runs[lang]
+        avg_time = str(overall_time / test_runs[lang])
 
-        return avg_time
+        return avg_time + ' s'
 
     def cpp_time():
 
@@ -158,8 +158,8 @@ def get_time(file_path, file_name):
                 with open('temp.cpp', 'w+') as tempf:
 
                     # copy test runs value
-                    tempf.write('#define TEST_RUNS %s\n' \
-                                % (str(test_runs[lang])))
+                    tempf.write('#define TEST_RUNS ' \
+                                + str(test_runs[lang]) + '\n')
 
                     # copy timer source
                     with open(cpptimer_file_path, 'r') as cpptsf:
@@ -168,11 +168,11 @@ def get_time(file_path, file_name):
                     # copy solution source
                     with open(sol_file_path, 'r') as solf:
 
-                        logger.info('parsing source of <%s>:\n' % (file_name))
+                        logger.info('parsing ' + file_name + ':\n')
                         logger.info('START PARSE')
+                        is_source = False
 
                         # start analyzing source code
-                        is_source = False
                         for code_line in solf.xreadlines():
 
                             if code_line.strip() == '':
@@ -182,47 +182,46 @@ def get_time(file_path, file_name):
 
                                 # ignore comments
                                 if '//' in code_line:
-                                    logger.info('skipped comment: <%s>' \
-                                                % (code_line.strip()))
+                                    logger.info('skipped comment: ' \
+                                                + code_line.strip())
 
                                 # copy required headers
                                 elif 'include' in code_line:
                                     if 'iostream' not in code_line:
-                                        logger.info('added header: <%s>' \
-                                                    % (code_line.strip()))
+                                        logger.info('added header: ' \
+                                                    + code_line.strip())
                                         tempf.write(code_line)
                                     else:  # ignore 'iostream'
                                         continue
 
                                 # skip namespace setting
                                 elif 'namespace' in code_line:
-                                    logger.info('skipped namespace: <%s>' \
-                                                % (code_line.strip()))
+                                    logger.info('skipped namespace: ' \
+                                                + code_line.strip())
 
                                 # copy function prototypes
                                 elif '(' in code_line and ')' in code_line:
                                     if 'main' not in code_line:
                                         tempf.write(code_line)
-                                        logger.info('added prototype: <%s>' \
-                                                    % (code_line.strip()))
-                                    else:
-                                        # copy 'main' function as 'run'
+                                        logger.info('added prototype: ' \
+                                                    + code_line.strip())
+                                    else:  # copy 'main' function as 'run'
                                         ln = code_line.replace('main', 'run')
                                         tempf.write(ln)
                                         is_source = True
-                                        logger.info('at main source: <%s>' \
-                                                    % (code_line.strip()))
+                                        logger.info('at main source: ' \
+                                                    + code_line.strip())
                             else:
                                 # copy source code
                                 if 'cout' not in code_line:
                                     tempf.write(code_line)
                                 else:  # ignore 'cout'
-                                    logger.info('skipped statement: <%s>' \
-                                                % (code_line.strip()))
+                                    logger.info('skipped statement: ' \
+                                                + code_line.strip())
 
                         logger.info('STOP PARSE\n')
 
-            except Exception:
+            except Exception:  # handle all errors
                     logger.exception('Caught exception!')
                     with open(sol_file_path, 'r') as solf:
                         logger.debug('solution.cpp contents:\n' + solf.read())
@@ -233,8 +232,8 @@ def get_time(file_path, file_name):
             return True
 
         # setup paths
-        sol_file_path = '%s/%s' % (file_path, file_name)
-        cpptimer_file_path = '%s/cpp_timer_source.cpp' % (dirs['misc'])
+        sol_file_path = file_path + '/' + file_name
+        cpptimer_file_path = dirs['misc'] + '/cpp_timer_source.cpp'
 
         # parse and create timable source
         if not parse_source():
@@ -248,16 +247,14 @@ def get_time(file_path, file_name):
         run_cmd = './temp.out'
         avg_time = subprocess.check_output(run_cmd.split(' ')).strip()
 
-        return avg_time
+        return avg_time + ' s'
 
     def java_time():
         return 'Not supported!'
 
     options = {'py': py_time, 'cpp': cpp_time, 'java': java_time}
 
-    avg_time = options[lang]()
-
-    time_info = '%s s' % (avg_time)
+    time_info = options[lang]()
 
     return time_info
 
@@ -267,8 +264,8 @@ def timing():
     def timer(prob):
 
         # setup paths
-        prob_dir_path = '%s/%s' % (dirs['solutions'], prob)
-        timings_file_path = '%s/timings.txt' % (prob_dir_path)
+        prob_dir_path = dirs['solutions'] + '/' + prob
+        timings_file_path = prob_dir_path + '/timings.txt'
 
         # store timings for each solution
         with open(timings_file_path, 'w+') as timef:
@@ -305,7 +302,7 @@ def timing():
 
     # time all solutions
     for prob in problems:
-        print '%s:' % (prob)
+        print prob + ' :'
         for run_info in timer(prob):
             print run_info
         print ''
@@ -321,11 +318,11 @@ def run_test():
 
     print run_info
 
-    print '%s started!\n' % (test_type['name'])
+    print test_type['name'] + ' started!\n'
 
     test_type['function']()
 
-    print '%s complete!\n' % (test_type['name'])
+    print test_type['name'] + ' complete!\n'
 
 
 def setup_test():
@@ -337,12 +334,12 @@ def setup_test():
         # setup working directory structure
         dirs = {}
         dirs['project'] = proj_dir
-        dirs['test'] = '%s/test' % (dirs['project'])
-        dirs['source'] = '%s/src' % (dirs['project'])
-        dirs['data'] = '%s/data' % (dirs['project'])
-        dirs['info'] = '%s' % (dirs['data'])
-        dirs['misc'] = '%s/misc' % (dirs['data'])
-        dirs['answers'] = '%s/answers' % (dirs['data'])
+        dirs['test'] = dirs['project'] + '/test'
+        dirs['source'] = dirs['project'] + '/src'
+        dirs['data'] = dirs['project'] + '/data'
+        dirs['info'] = dirs['data']
+        dirs['misc'] = dirs['data'] + '/misc'
+        dirs['answers'] = dirs['data'] + '/answers'
 
         return dirs
 
