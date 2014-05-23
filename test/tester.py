@@ -50,7 +50,7 @@ def get_answer(file_path, file_name):
         subprocess.check_output(compile_cmd.split(' '))
 
         # run .out executable
-        run_cmd = file_path + '/ans.out'
+        run_cmd = '/'.join([file_path, 'ans.out'])
         answer = subprocess.check_output(run_cmd.split(' '))
 
         return answer
@@ -79,12 +79,12 @@ def validation():
     def validator(prob):
 
         # setup paths
-        prob_dir_path = dirs['solutions'] + '/' + prob
+        prob_dir_path = '/'.join([dirs['solutions'], prob])
         if lang == 'java':
             usr_file_name = '_%s_%s.%s' % (prob, user, lang)
         else:
             usr_file_name = '%s_%s.%s' % (prob, user, lang)
-        usr_file_path = prob_dir_path + '/' + usr_file_name
+        usr_file_path = '/'.join([prob_dir_path, usr_file_name])
 
         # validate problem solution
         try:  # handle missing solution
@@ -232,8 +232,8 @@ def get_time(file_path, file_name):
             return True
 
         # setup paths
-        sol_file_path = file_path + '/' + file_name
-        cpptimer_file_path = dirs['misc'] + '/cpp_timer_source.cpp'
+        sol_file_path = '/'.join([file_path, file_name])
+        cpptimer_file_path = '/'.join([dirs['misc'], 'cpp_timer_source.cpp'])
 
         # parse and create timable source
         if not parse_source():
@@ -264,8 +264,8 @@ def timing():
     def timer(prob):
 
         # setup paths
-        prob_dir_path = dirs['solutions'] + '/' + prob
-        timings_file_path = prob_dir_path + '/timings.txt'
+        prob_dir_path = '/'.join([dirs['solutions'], prob])
+        timings_file_path = '/'.join([prob_dir_path, 'timings.txt'])
 
         # store timings for each solution
         with open(timings_file_path, 'w+') as timef:
@@ -425,7 +425,7 @@ def setup_test():
     lang = get_info(options['lang'])
 
     # set solutions directory
-    dirs['solutions'] = '%s/%s/solutions' % (dirs['source'], lang)
+    dirs['solutions'] = '/'.join([dirs['source'], lang, 'solutions'])
 
     # setup test parameters
     test_type = get_test_type()
