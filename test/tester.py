@@ -17,7 +17,7 @@ from data import answers
 
 
 # Tweakable Parameters
-test_runs = {'py': 10, 'cpp': 25, 'java': 0}  # loops, for average
+test_runs = {'py': 15, 'cpp': 25, 'java': 0}  # loops, for average
 max_solve_time = 60  # seconds
 prob_num_len = 3  # NNN
 
